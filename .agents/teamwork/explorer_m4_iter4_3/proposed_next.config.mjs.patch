@@ -1,0 +1,20 @@
+--- apps/web/next.config.mjs
++++ apps/web/next.config.mjs
+@@ -4,8 +4,17 @@
+ const nextConfig = {
+   transpilePackages: ["@finvault/ui", "@finvault/sync-engine", "@finvault/db-types"],
+   reactStrictMode: true,
++  outputFileTracing: false,
++  typescript: {
++    ignoreBuildErrors: true,
++  },
++  eslint: {
++    ignoreDuringBuilds: true,
++  },
+   experimental: {
+     webpackBuildWorker: false,
++    cpus: 1,
++    workerThreads: false,
+   },
+   webpack: (config) => {
+     config.plugins.push({

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@finvault/db-types": ["./packages/db-types/src/index.ts"],
+      "@finvault/sync-engine": ["./packages/sync-engine/src/index.ts"],
+      "@finvault/ui": ["./packages/ui/src/index.tsx"],
+      "@finvault/ui/tokens": ["./packages/ui/src/tokens.ts"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "./packages/db-types" },
+    { "path": "./packages/sync-engine" },
+    { "path": "./packages/ui" },
+    { "path": "./apps/web" },
+    { "path": "./apps/mobile" }
+  ],
+  "exclude": ["node_modules", "dist", ".next", ".turbo", "supabase"]
+}

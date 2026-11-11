@@ -1,0 +1,155 @@
+--- a/supabase/migrations/20261108000000_init_finvault_schema.sql
++++ b/supabase/migrations/20261108000000_init_finvault_schema.sql
+@@ -144,7 +144,7 @@
+     END IF;
+ 
+     RETURN COALESCE(NEW, OLD);
+-END;
+-$$ LANGUAGE plpgsql;
++END;
++$$ LANGUAGE plpgsql SET search_path = public, pg_temp;
+ 
+ -- Bind as a DEFERRED constraint trigger
+ DROP TRIGGER IF EXISTS trg_verify_transaction_balance ON journal_entries;
+@@ -158,26 +158,82 @@
+ CREATE OR REPLACE FUNCTION update_account_balance_on_journal()
+ RETURNS TRIGGER AS $$
+ DECLARE
+-    v_account_id UUID;
+     v_type account_type;
+     v_delta BIGINT;
++    v_old_type account_type;
++    v_new_type account_type;
++    v_old_delta BIGINT;
++    v_new_delta BIGINT;
+ BEGIN
+     IF TG_OP = 'INSERT' THEN
+         SELECT type INTO v_type FROM accounts WHERE id = NEW.account_id;
++        IF v_type IS NULL THEN
++            RAISE EXCEPTION 'Account % not found or inaccessible', NEW.account_id
++                USING ERRCODE = 'foreign_key_violation';
++        END IF;
++
+         IF v_type IN ('ASSET', 'EXPENSE') THEN
+             v_delta := CASE WHEN NEW.direction = 'DEBIT' THEN NEW.amount_minor ELSE -NEW.amount_minor END;
+         ELSE
+             v_delta := CASE WHEN NEW.direction = 'CREDIT' THEN NEW.amount_minor ELSE -NEW.amount_minor END;
+         END IF;
+         UPDATE accounts SET balance_minor = balance_minor + v_delta, updated_at = NOW() WHERE id = NEW.account_id;
++
+     ELSIF TG_OP = 'DELETE' THEN
+         SELECT type INTO v_type FROM accounts WHERE id = OLD.account_id;
+         IF v_type IN ('ASSET', 'EXPENSE') THEN
+             v_delta := CASE WHEN OLD.direction = 'DEBIT' THEN -OLD.amount_minor ELSE OLD.amount_minor END;
+         ELSE
+             v_delta := CASE WHEN OLD.direction = 'CREDIT' THEN -OLD.amount_minor ELSE OLD.amount_minor END;
+         END IF;
+         UPDATE accounts SET balance_minor = balance_minor + v_delta, updated_at = NOW() WHERE id = OLD.account_id;
++
++    ELSIF TG_OP = 'UPDATE' THEN
++        -- Guard against reassigning immutable keys
++        IF OLD.id <> NEW.id THEN
++            RAISE EXCEPTION 'Cannot update primary key id of journal entry'
++                USING ERRCODE = 'check_violation';
++        END IF;
++
++        IF OLD.user_id <> NEW.user_id THEN
++            RAISE EXCEPTION 'Cannot reassign journal entry to a different user'
++                USING ERRCODE = 'check_violation';
++        END IF;
++
++        IF OLD.transaction_id <> NEW.transaction_id THEN
++            RAISE EXCEPTION 'Cannot reassign journal entry to a different transaction'
++                USING ERRCODE = 'check_violation';
++        END IF;
++
++        -- Revert OLD entry impact
++        SELECT type INTO v_old_type FROM accounts WHERE id = OLD.account_id;
++        IF v_old_type IN ('ASSET', 'EXPENSE') THEN
++            v_old_delta := CASE WHEN OLD.direction = 'DEBIT' THEN -OLD.amount_minor ELSE OLD.amount_minor END;
++        ELSE
++            v_old_delta := CASE WHEN OLD.direction = 'CREDIT' THEN -OLD.amount_minor ELSE OLD.amount_minor END;
++        END IF;
++
++        -- Apply NEW entry impact
++        SELECT type INTO v_new_type FROM accounts WHERE id = NEW.account_id;
++        IF v_new_type IS NULL THEN
++            RAISE EXCEPTION 'Account % not found or inaccessible', NEW.account_id
++                USING ERRCODE = 'foreign_key_violation';
++        END IF;
++
++        IF v_new_type IN ('ASSET', 'EXPENSE') THEN
++            v_new_delta := CASE WHEN NEW.direction = 'DEBIT' THEN NEW.amount_minor ELSE -NEW.amount_minor END;
++        ELSE
++            v_new_delta := CASE WHEN NEW.direction = 'CREDIT' THEN NEW.amount_minor ELSE -NEW.amount_minor END;
++        END IF;
++
++        -- Apply updates
++        IF OLD.account_id = NEW.account_id THEN
++            UPDATE accounts 
++            SET balance_minor = balance_minor + (v_old_delta + v_new_delta), 
++                updated_at = NOW() 
++            WHERE id = NEW.account_id;
++        ELSE
++            UPDATE accounts 
++            SET balance_minor = balance_minor + v_old_delta, 
++                updated_at = NOW() 
++            WHERE id = OLD.account_id;
++
++            UPDATE accounts 
++            SET balance_minor = balance_minor + v_new_delta, 
++                updated_at = NOW() 
++            WHERE id = NEW.account_id;
++        END IF;
+     END IF;
+     RETURN COALESCE(NEW, OLD);
+-END;
+-$$ LANGUAGE plpgsql;
++END;
++$$ LANGUAGE plpgsql SET search_path = public, pg_temp;
+ 
+ DROP TRIGGER IF EXISTS trg_update_account_balance ON journal_entries;
+ CREATE TRIGGER trg_update_account_balance
+-AFTER INSERT OR DELETE ON journal_entries
++AFTER INSERT OR UPDATE OR DELETE ON journal_entries
+ FOR EACH ROW
+ EXECUTE FUNCTION update_account_balance_on_journal();
+ 
+@@ -201,7 +257,7 @@
+         (NEW.id, 'General Expenses', 'EXPENSE', 'INR', 0),
+         (NEW.id, 'Primary Income', 'INCOME', 'INR', 0);
+     RETURN NEW;
+-END;
+-$$ LANGUAGE plpgsql SECURITY DEFINER;
++END;
++$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
+ 
+ DROP TRIGGER IF EXISTS trg_on_auth_user_created ON auth.users;
+@@ -226,6 +282,19 @@
+     IF v_user_id IS NULL THEN
+         RAISE EXCEPTION 'Not authenticated' USING ERRCODE = 'insufficient_privilege';
+     END IF;
+ 
++    -- Cross-tenant verification: all referenced accounts must belong to authenticated user
++    FOR v_entry IN SELECT * FROM jsonb_array_elements(p_entries)
++    LOOP
++        IF NOT EXISTS (
++            SELECT 1 FROM accounts 
++            WHERE id = (v_entry->>'account_id')::UUID 
++              AND user_id = v_user_id
++        ) THEN
++            RAISE EXCEPTION 'Cross-tenant foreign key violation: account % does not belong to user %',
++                (v_entry->>'account_id')::UUID, v_user_id
++                USING ERRCODE = 'foreign_key_violation';
++        END IF;
++    END LOOP;
++
+     INSERT INTO transactions (user_id, idempotency_key, transaction_date, description, notes)
+     VALUES (v_user_id, p_idempotency_key, p_transaction_date, p_description, p_notes)
+     RETURNING id INTO v_tx_id;
+@@ -244,4 +313,4 @@
+ 
+     RETURN v_tx_id;
+ END;
+-$$ LANGUAGE plpgsql SECURITY DEFINER;
++$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;

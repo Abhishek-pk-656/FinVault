@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "FinVault",
+    "slug": "finvault",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "finvault",
+    "splash": {
+      "backgroundColor": "#040A0A"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#040A0A"
+      },
+      "package": "com.finvault.app"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.finvault.app"
+    }
+  }
+}

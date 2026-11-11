@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@finvault/db-types": ["../../../packages/db-types/src/index.ts"],
+      "@finvault/sync-engine": ["../../../packages/sync-engine/src/index.ts"],
+      "@finvault/ui": ["../../../packages/ui/src/index.tsx"],
+      "@finvault/ui/tokens": ["../../../packages/ui/src/tokens.ts"]
+    }
+  },
+  "include": ["../../../packages/db-types/src/**/*"]
+}

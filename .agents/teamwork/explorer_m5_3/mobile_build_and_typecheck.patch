@@ -1,0 +1,70 @@
+diff --git a/apps/mobile/src/lib/auth/biometrics.ts b/apps/mobile/src/lib/auth/biometrics.ts
+--- a/apps/mobile/src/lib/auth/biometrics.ts
++++ b/apps/mobile/src/lib/auth/biometrics.ts
+@@ -18,7 +18,10 @@ export async function authenticateWithBiometrics(): Promise<{ success: boolean;
+       disableDeviceFallback: false,
+     });
+ 
+-    return { success: result.success, error: result.error };
++    if (result.success) {
++      return { success: true };
++    }
++    return { success: false, error: result.error };
+   } catch (err: unknown) {
+     const message = err instanceof Error ? err.message : 'Biometric authentication failed';
+     return { success: false, error: message };
+diff --git a/apps/mobile/src/types/env.d.ts b/apps/mobile/src/types/env.d.ts
+new file mode 100644
+--- /dev/null
++++ b/apps/mobile/src/types/env.d.ts
+@@ -0,0 +1,14 @@
++declare global {
++  namespace NodeJS {
++    interface ProcessEnv {
++      readonly EXPO_PUBLIC_SUPABASE_URL?: string;
++      readonly EXPO_PUBLIC_SUPABASE_ANON_KEY?: string;
++      readonly [key: string]: string | undefined;
++    }
++  }
++}
++
++declare const process: {
++  env: NodeJS.ProcessEnv;
++};
++
++export {};
+diff --git a/apps/mobile/babel.config.js b/apps/mobile/babel.config.js
+new file mode 100644
+--- /dev/null
++++ b/apps/mobile/babel.config.js
+@@ -0,0 +1,6 @@
++module.exports = function (api) {
++  api.cache(true);
++  return {
++    presets: ['babel-preset-expo'],
++  };
++};
+diff --git a/apps/mobile/package.json b/apps/mobile/package.json
+--- a/apps/mobile/package.json
++++ b/apps/mobile/package.json
+@@ -10,10 +10,12 @@
+     "web": "expo start --web",
+     "lint": "eslint .",
++    "test": "node --test ../../tests/mobile/mobile.test.ts",
+     "typecheck": "tsc --noEmit"
+   },
+   "dependencies": {
+     "@finvault/db-types": "workspace:*",
+     "@finvault/sync-engine": "workspace:*",
++    "@finvault/ui": "workspace:*",
+     "@supabase/supabase-js": "^2.42.0",
+     "expo": "~51.0.0",
+     "expo-local-authentication": "~14.0.0",
+@@ -24,6 +26,7 @@
+     "react-native": "0.74.1"
+   },
+   "devDependencies": {
++    "@types/node": "^20.12.7",
+     "@types/react": "~18.2.45",
+     "typescript": "^5.4.5"
+   }

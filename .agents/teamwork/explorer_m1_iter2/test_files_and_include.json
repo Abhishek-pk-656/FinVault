@@ -1,0 +1,10 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@finvault/db-types": ["../../../packages/db-types/src/index.ts"]
+    }
+  },
+  "files": [],
+  "include": []
+}
