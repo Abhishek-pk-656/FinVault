@@ -86,14 +86,14 @@
   - [x] Total repository test verification: 196/196 tests passing across all suites with 100% success rate.
 
 ### Milestone 7: Git Push, CI/CD & Production Deployment
-- [ ] **M7.1: Git Repository Initialization & Secret Audit**
+- [x] **M7.1: Git Repository Initialization & Secret Audit**
   - [x] Verify `.gitignore` strictly excludes credentials, SQLite databases, build artifacts, and secrets.
   - [x] Audit entire codebase for zero plaintext secrets, real JWT tokens, and hardcoded private keys.
   - [x] Ensure synchronized `.env.example` templates across root, `apps/web`, and `apps/mobile`.
   - [x] Stage and commit all codebase assets to `main` branch with conventional commit.
-- [ ] **M7.2: Remote Repository Linkage & Initial Push**
-  - [ ] Configure GitHub remote origin (`git remote add origin <URL>`).
-  - [ ] Push local `main` branch to remote origin (`git push -u origin main`).
+- [x] **M7.2: Remote Repository Linkage & Initial Push**
+  - [x] Configure GitHub remote origin (`git remote add origin https://github.com/Abhishek-pk-656/FinVault.git`).
+  - [x] Push local `main` branch to remote origin (`git push -u origin main`).
 - [ ] **M7.3: CI/CD Pipeline & Automated Quality Gate**
   - [ ] Configure GitHub Actions workflow running monorepo build, linting, and 196-test master verification suite.
 - [ ] **M7.4: Production Hosting & Deployment**
