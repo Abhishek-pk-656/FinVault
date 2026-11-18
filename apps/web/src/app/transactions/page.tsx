@@ -1,4 +1,6 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
+import { isAuthenticatedSession } from '../../lib/supabase/server';
 import { fetchAccounts } from '../../lib/services/accounts';
 import { fetchRecentTransactions } from '../../lib/services/transactions';
 import { MultiSplitForm } from '../../components/transactions/MultiSplitForm';
@@ -7,6 +9,11 @@ import { RecentTransactionsCard } from '../../components/transactions/RecentTran
 export const revalidate = 0;
 
 export default async function TransactionsPage() {
+  const isAuthed = await isAuthenticatedSession();
+  if (!isAuthed) {
+    redirect('/login');
+  }
+
   const [accounts, transactions] = await Promise.all([
     fetchAccounts(),
     fetchRecentTransactions(10),

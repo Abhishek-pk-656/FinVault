@@ -1,4 +1,6 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
+import { isAuthenticatedSession } from '../lib/supabase/server';
 import { fetchAccounts, fetchNetWorthSummary } from '../lib/services/accounts';
 import { NetWorthHeroCard } from '../components/net-worth/NetWorthHeroCard';
 import { AssetsBreakdownCard } from '../components/net-worth/AssetsBreakdownCard';
@@ -7,6 +9,11 @@ import { LiabilitiesBreakdownCard } from '../components/net-worth/LiabilitiesBre
 export const revalidate = 0; // Dynamic on every request
 
 export default async function NetWorthCockpitPage() {
+  const isAuthed = await isAuthenticatedSession();
+  if (!isAuthed) {
+    redirect('/login');
+  }
+
   const [accounts, summary] = await Promise.all([
     fetchAccounts(),
     fetchNetWorthSummary(),

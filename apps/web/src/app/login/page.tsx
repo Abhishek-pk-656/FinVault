@@ -32,7 +32,8 @@ export default function LoginPage() {
   };
 
   const handleDemoSignIn = () => {
-    // In local demo or offline mode, navigate directly to cockpit
+    // Set demo session cookie and navigate directly to cockpit
+    document.cookie = 'finvault-demo=true; path=/; max-age=86400; SameSite=Lax';
     window.location.href = '/';
   };
 

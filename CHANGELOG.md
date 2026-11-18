@@ -18,6 +18,13 @@ All notable changes to this project will be documented in this file.
   - Configured Vercel web cockpit (`apps/web/vercel.json`) with Next.js framework preset and security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`).
   - Configured Expo EAS standalone Android APK profile (`apps/mobile/eas.json`), package identifier `com.finvault.app`, and biometric/sqlite plugins in `apps/mobile/app.json`.
   - Declared `fast-check` in root and mobile workspaces and configured `.npmrc` (`shamefully-hoist=true`) to guarantee clean ESM module resolution for root-level test runners during GitHub Actions CI.
+  - **Vercel Cloud Deployment Hardening & 500 Error Remediation**:
+    - Diagnosed Vercel runtime `500: Internal Server Error` caused by disabled `outputFileTracing` and unhandled session lookups on unauthenticated routes.
+    - Environment-gated Windows NTFS asset flush plugins and `outputFileTracing: false` to local Windows non-Vercel runs (`process.platform === 'win32' && !process.env.VERCEL`), allowing Vercel serverless builds to perform standard client module tracing.
+    - Hardened `apps/web/src/middleware.ts` with early exclusion of `/_next` data/asset requests, `try/catch` guard over Supabase auth calls, and support for demo session cookies.
+    - Hardened all `apps/web` Server Components (`/`, `/cash-flow`, `/transactions`, `/ious`) with server-side `isAuthenticatedSession()` redirect guards so unauthenticated requests cleanly navigate to `/login` with zero 500 crashes.
+    - Updated `apps/web/src/app/login/page.tsx` demo button to set `finvault-demo` cookie for local interactive testing.
+  - **Linked Cloud CLI Capabilities Protocol**: Updated `.agents/skills/db-migration-and-sync/SKILL.md` and `docs/11-ENV-AND-MCP.md` documenting authenticated agent execution for `npx supabase db push --remote`, `npx supabase functions deploy`, `npx vercel env ls`, and `npx vercel logs`.
   - Added `ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)` in `docs/10-ADR.md` and updated `docs/07-DEPLOYMENT-AND-OBSERVABILITY.md` with full deployment and rollback playbooks.
 
 ## [1.1.0] - 2026-11-11

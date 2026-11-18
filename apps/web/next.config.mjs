@@ -215,12 +215,16 @@ function flushServerAssets(outputPath) {
   }
 }
 
+const isVercel = Boolean(process.env.VERCEL);
+const isWindows = process.platform === "win32" && !isVercel;
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ["@finvault/ui", "@finvault/sync-engine", "@finvault/db-types"],
   reactStrictMode: true,
-  // Pillar 1: Disable unused standalone file tracing to eliminate collect-build-traces ENOENT
-  outputFileTracing: false,
+  // On local Windows NTFS, disable file tracing to eliminate collect-build-traces ENOENT.
+  // On Vercel, allow standard Next.js file tracing so serverless functions bundle all client manifests.
+  ...(isWindows ? { outputFileTracing: false } : {}),
   // Pillar 2: Disable flaky internal typecheck/linting during next build
   // (Full static verification is enforced independently via `pnpm typecheck` / `tsc --noEmit`)
   typescript: {
@@ -237,45 +241,47 @@ const nextConfig = {
   },
   // Pillar 4: Webpack hooks for directory collision mitigation and synchronous NTFS asset persistence
   webpack: (config) => {
-    config.plugins.push({
-      apply(compiler) {
-        // Intercept Webpack's internal mkdir collisions on NTFS
-        compiler.hooks.beforeRun.tap("FixWindowsNtfsEpermPlugin", (comp) => {
-          if (comp.outputFileSystem && comp.outputFileSystem.mkdir) {
-            const origMkdir = comp.outputFileSystem.mkdir.bind(comp.outputFileSystem);
-            comp.outputFileSystem.mkdir = (dir, ...args) => {
-              const cb = args.pop();
-              origMkdir(dir, ...args, (err, ...res) => {
-                if (err && (err.code === "EPERM" || err.code === "EEXIST")) {
-                  if (fs.existsSync(dir)) {
-                    return cb(null, ...res);
-                  }
-                  try {
-                    fs.mkdirSync(dir, { recursive: true });
-                    return cb(null, ...res);
-                  } catch (e) {
-                    if (e && (e.code === "EEXIST" || fs.existsSync(dir))) {
+    if (isWindows) {
+      config.plugins.push({
+        apply(compiler) {
+          // Intercept Webpack's internal mkdir collisions on NTFS
+          compiler.hooks.beforeRun.tap("FixWindowsNtfsEpermPlugin", (comp) => {
+            if (comp.outputFileSystem && comp.outputFileSystem.mkdir) {
+              const origMkdir = comp.outputFileSystem.mkdir.bind(comp.outputFileSystem);
+              comp.outputFileSystem.mkdir = (dir, ...args) => {
+                const cb = args.pop();
+                origMkdir(dir, ...args, (err, ...res) => {
+                  if (err && (err.code === "EPERM" || err.code === "EEXIST")) {
+                    if (fs.existsSync(dir)) {
                       return cb(null, ...res);
                     }
+                    try {
+                      fs.mkdirSync(dir, { recursive: true });
+                      return cb(null, ...res);
+                    } catch (e) {
+                      if (e && (e.code === "EEXIST" || fs.existsSync(dir))) {
+                        return cb(null, ...res);
+                      }
+                    }
                   }
-                }
-                cb(err, ...res);
-              });
-            };
-          }
-        });
+                  cb(err, ...res);
+                });
+              };
+            }
+          });
 
-        // Ensure manifests and all server chunks are persisted and fsynced after asset emission
-        compiler.hooks.afterEmit.tap("FixWindowsNtfsFlushPlugin", () => {
-          flushServerAssets(compiler.outputPath);
-        });
+          // Ensure manifests and all server chunks are persisted and fsynced after asset emission
+          compiler.hooks.afterEmit.tap("FixWindowsNtfsFlushPlugin", () => {
+            flushServerAssets(compiler.outputPath);
+          });
 
-        // Additional safeguard on compiler completion
-        compiler.hooks.done.tap("FixWindowsNtfsDonePlugin", () => {
-          flushServerAssets(compiler.outputPath);
-        });
-      },
-    });
+          // Additional safeguard on compiler completion
+          compiler.hooks.done.tap("FixWindowsNtfsDonePlugin", () => {
+            flushServerAssets(compiler.outputPath);
+          });
+        },
+      });
+    }
     return config;
   },
 };

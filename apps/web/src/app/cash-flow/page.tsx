@@ -1,4 +1,6 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
+import { isAuthenticatedSession } from '../../lib/supabase/server';
 import { CashFlowSummaryCard } from '../../components/cash-flow/CashFlowSummaryCard';
 import { InflowStreamsCard, type InflowItem } from '../../components/cash-flow/InflowStreamsCard';
 import { OutflowStreamsCard, type OutflowItem } from '../../components/cash-flow/OutflowStreamsCard';
@@ -6,6 +8,11 @@ import { OutflowStreamsCard, type OutflowItem } from '../../components/cash-flow
 export const revalidate = 0;
 
 export default async function CashFlowPage() {
+  const isAuthed = await isAuthenticatedSession();
+  if (!isAuthed) {
+    redirect('/login');
+  }
+
   const inflows: InflowItem[] = [
     { id: 'in-1', name: 'Primary Engineering Salary', category: 'Salary / W2', amountMinor: '12000000' }, // ₹1,20,000.00
     { id: 'in-2', name: 'Systems Architecture Consulting', category: 'Freelance', amountMinor: '2200000' }, // ₹22,000.00

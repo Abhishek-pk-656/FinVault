@@ -1,4 +1,6 @@
 import React from 'react';
+import { redirect } from 'next/navigation';
+import { isAuthenticatedSession } from '../../lib/supabase/server';
 import { fetchIOUs } from '../../lib/services/ious';
 import { fetchAccounts } from '../../lib/services/accounts';
 import { IOUSummaryCard } from '../../components/ious/IOUSummaryCard';
@@ -7,6 +9,11 @@ import { IOUClientManager } from '../../components/ious/IOUClientManager';
 export const revalidate = 0;
 
 export default async function IOUsPage() {
+  const isAuthed = await isAuthenticatedSession();
+  if (!isAuthed) {
+    redirect('/login');
+  }
+
   const [ious, accounts] = await Promise.all([
     fetchIOUs(),
     fetchAccounts(),
