@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/node": "^20.12.7",
     "@types/react": "~18.2.45",
+    "fast-check": "^3.18.0",
     "typescript": "^5.4.5"
   }
 }

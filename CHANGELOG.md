@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
   - Audited Supabase Deno Edge Functions and added root convenience scripts (`supabase:link`, `supabase:push`, `supabase:deploy-functions`).
   - Configured Vercel web cockpit (`apps/web/vercel.json`) with Next.js framework preset and security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`).
   - Configured Expo EAS standalone Android APK profile (`apps/mobile/eas.json`), package identifier `com.finvault.app`, and biometric/sqlite plugins in `apps/mobile/app.json`.
-  - Declared `fast-check` in root `devDependencies` to ensure clean isolated module resolution during GitHub Actions CI test execution.
+  - Declared `fast-check` in root and mobile workspaces and configured `.npmrc` (`shamefully-hoist=true`) to guarantee clean ESM module resolution for root-level test runners during GitHub Actions CI.
   - Added `ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)` in `docs/10-ADR.md` and updated `docs/07-DEPLOYMENT-AND-OBSERVABILITY.md` with full deployment and rollback playbooks.
 
 ## [1.1.0] - 2026-11-11
