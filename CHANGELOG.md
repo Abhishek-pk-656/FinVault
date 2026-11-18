@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
 - **Automated Verification, Record & Push Gate**: Upgraded `.agents/skills/verify-and-record/SKILL.md` and `AGENTS.md` to automate Git conventional commit and push upon completion of the 5-tier verification suite.
 - **Milestone 7 CI/CD & Deployment Readiness**:
   - Created GitHub Actions automated CI gate (`.github/workflows/ci.yml`) enforcing frozen lockfile, Turborepo typecheck, and full 196-test verification suite on push and PR to `main`.
+  - Modernized CI workflow for Ubuntu 24.04 runners and Node.js 22 with `FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true` execution flags.
+  - Resolved `apps/mobile` TypeScript `process.env` type resolution by introducing `apps/mobile/env.d.ts` and `@types/node`.
   - Audited Supabase Deno Edge Functions and added root convenience scripts (`supabase:link`, `supabase:push`, `supabase:deploy-functions`).
   - Configured Vercel web cockpit (`apps/web/vercel.json`) with Next.js framework preset and security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`).
   - Configured Expo EAS standalone Android APK profile (`apps/mobile/eas.json`), package identifier `com.finvault.app`, and biometric/sqlite plugins in `apps/mobile/app.json`.
