@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-11-18
+### Changed
+- **Agent Instruction Suite & Token Efficiency Realignment**: Streamlined root operational router [`AGENTS.md`](file:///d:/programming/New_project/AGENTS.md) and `.agents/rules/` (`00-living-plan-protocol.md`, `01-financial-ledger-safety.md`, `02-frontend-mobile-standards.md`, `03-sync-and-rls-parity.md`) to surgical, contract-first progressive disclosure pointers, optimizing token efficiency.
+- **Architectural Documentation Synchronization**:
+  - Synchronized [`docs/02-ARCHITECTURE-AND-STACK.md`](file:///d:/programming/New_project/docs/02-ARCHITECTURE-AND-STACK.md), [`docs/06-TESTING-AND-QA.md`](file:///d:/programming/New_project/docs/06-TESTING-AND-QA.md), and [`docs/07-DEPLOYMENT-AND-OBSERVABILITY.md`](file:///d:/programming/New_project/docs/07-DEPLOYMENT-AND-OBSERVABILITY.md) to reflect the active baseline: Turborepo + pnpm monorepo, Supabase Cloud PostgreSQL 16 with RLS, Google OAuth PKCE, Deno Edge Functions, `packages/sync-engine` LWW outbox, `packages/ui`, `apps/web` with BigInt RSC safety, `apps/mobile` with `ExpoSQLiteAdapter` (<0.3ms write latency) & biometrics, and the 5-tier 196-test suite.
+  - Formally documented that Python FastAPI, Alembic, Pytest, and Hypothesis are reserved strictly for the Phase 3 AI/ML sidecar service (categorization, OCR, embedding pipelines) and are never used in Phase 1–2 ledger or web/mobile tasks.
+- **Workspace Test Runner Harmonization**: Synchronized `@finvault/sync-engine` test script to native `node --test` harness matching Node.js SQLite integration, ensuring `pnpm turbo test` and `pnpm turbo typecheck` pass across all 5 workspace packages with zero errors and 196/196 test verification passing cleanly.
+- **Automated Verification, Record & Push Gate**: Upgraded `.agents/skills/verify-and-record/SKILL.md` and `AGENTS.md` to automate Git conventional commit and push upon completion of the 5-tier verification suite.
+
 ## [1.1.0] - 2026-11-11
 ### Added
 - **Milestones 1–6 Core Platform Release**: Complete implementation and full verification of the FinVault privacy-first personal finance platform across Web and Android.

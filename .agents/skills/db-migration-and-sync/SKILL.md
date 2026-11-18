@@ -1,15 +1,15 @@
+# File: .agents/skills/db-migration-and-sync/SKILL.md
+
 ---
+
 name: db-migration-and-sync
-description: Procedure for creating safe database migrations, configuring PostgreSQL triggers/RLS, and ensuring client SQLite parity.
+description: Creates safe Supabase PostgreSQL migrations, updates Deno Edge Functions, and synchronizes SQLite DDL and db-types.
 ---
 
-# Skill: Database Migration & Sync
+# Skill: Database Migration & Sync Parity
 
-When executing this skill:
-1. Create timestamped PostgreSQL SQL migrations under `supabase/migrations/<timestamp>_<name>.sql`.
-2. Ensure all monetary columns are typed as `BIGINT NOT NULL` minor units with check constraints (`> 0` for journal entries).
-3. Bind the deferred constraint trigger `trg_verify_transaction_balance` on `journal_entries` for double-entry integrity.
-4. Define Row Level Security (RLS) policies on every table with `USING (auth.uid() = user_id)`.
-5. Update client SQLite schema DDL in `packages/sync-engine` to maintain 1:1 parity with PostgreSQL tables and constraints.
-6. Regenerate database TypeScript interfaces in `packages/db-types`.
-7. Preserve self-hosted Alembic migration notes under "Future Roadmap" only.
+1. Create a new timestamped SQL migration in `supabase/migrations/` enforcing `BIGINT` minor units, `ENABLE ROW LEVEL SECURITY`, and `auth.uid() = user_id` policies[cite: 2].
+2. Verify compatibility with `trg_verify_transaction_balance`, `trg_update_account_balance`, and `post_transaction`[cite: 2].
+3. Mirror the schema modification in `packages/sync-engine` SQLite DDL and `sync_queue` delta handlers[cite: 2].
+4. Update shared TypeScript definitions in `packages/db-types`[cite: 2].
+5. Run scoped verification first: `pnpm --filter @finvault/db-types typecheck && pnpm --filter @finvault/sync-engine test`.

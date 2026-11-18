@@ -1,10 +1,13 @@
+# File: .agents/rules/01-financial-ledger-safety.md
+
 ---
-trigger: glob("**/{supabase,packages,apps}/**")
-description: Enforces strict accounting invariants, minor unit integer storage, and property testing for financial transactions.
+
+trigger: glob("{supabase/**,packages/sync-engine/**,packages/db-types/**}")
+description: Enforces BIGINT minor units, double-entry trigger invariants, and SHA-256 idempotency across database and sync layers.
 ---
 
 # Rule: Financial Ledger & Data Safety
 
-1. **Integer Minor Units Only:** Never use floating-point numbers (`float`/`double`) or arbitrary decimals for currency. Store and calculate all amounts strictly as 64-bit integer minor units (`BIGINT` in PostgreSQL, `INTEGER` in SQLite, `bigint` in TypeScript) representing cents or paise. Zero floating-point arithmetic is permitted.
-2. **Double-Entry Invariant:** Every posted transaction must maintain strict debit-credit balance equality ($\sum \text{debits} == \sum \text{credits}$). Enforced server-side via PostgreSQL deferred constraint triggers and verified in code via Vitest + `fast-check` property tests.
-3. **Idempotency & Deduplication:** All transaction ingestion operations (manual entry, split settlement, bank imports, Android notification parsers) must enforce cryptographic deduplication (`UUID` idempotency keys or SHA-256 hashes of date + minor amount + normalized description).
+1. **Strict Integer Minor Units:** All monetary columns, payloads, and calculations must use `BIGINT` minor units (`BigInt` in TS)[cite: 1, 2]. `float`, `double`, and `Number` arithmetic on currency are strictly forbidden[cite: 1, 2].
+2. **Double-Entry Trigger & RPC Parity:** All ledger mutations must preserve `trg_verify_transaction_balance` (`DEFERRABLE INITIALLY DEFERRED` checking `SUM(debits) == SUM(credits)`), `trg_update_account_balance` (`version = version + 1`), and atomic execution via `post_transaction`[cite: 2].
+3. **Idempotent Ingestion:** Enforce `SHA-256` deduplication hashes (`date + amount_minor + normalized_description`) on imported or synced transactions[cite: 1].

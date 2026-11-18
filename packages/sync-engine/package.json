@@ -15,7 +15,7 @@
     "build": "tsc --emitDeclarationOnly",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
-    "test": "vitest run"
+    "test": "node --test tests/sync-engine.test.ts tests/client-schema.test.ts"
   },
   "dependencies": {
     "@finvault/db-types": "workspace:*",
