@@ -39,3 +39,12 @@
   - `packages/sync-engine`: Shared offline SQLite and delta sync protocol.
   - `packages/ui`: Shared Venzer Botanical Minimalist design system components.
   - Pipeline orchestration manages cached typechecking, building, and testing across all projects.
+
+## ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)
+* **Status:** Accepted
+* **Context:** The platform requires reliable, automated, zero-maintenance production hosting across Web (desktop/mobile browser), Mobile (Android standalone APK), and Cloud Database/Edge compute, guarded by continuous integration.
+* **Decision:**
+  1. **Continuous Integration (GitHub Actions):** `.github/workflows/ci.yml` executes on every push and PR to `main`, validating frozen pnpm dependencies, strict TypeScript typecheck across all workspaces, and the 5-tier 196-test suite before merging or deploying.
+  2. **Database & Edge Logic (Supabase Cloud):** PostgreSQL 16 schema, deferred constraint triggers, RLS policies, and Deno Edge Functions (`validate-transaction`, `sync-reconcile`) deployed via official Supabase CLI (`pnpm supabase:link`, `pnpm supabase:push`, `pnpm supabase:deploy-functions`).
+  3. **Web Cockpit (Vercel):** Next.js 14+ deployed on Vercel (`apps/web/vercel.json`) with strict security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`), connecting seamlessly to Supabase via `@supabase/ssr` environment variables.
+  4. **Mobile Client (Expo EAS Standalone APK):** Configured via `apps/mobile/eas.json` with `preview` profile generating direct Android `.apk` binaries for sideloading and internal testing, paired with `com.finvault.app` bundle package and biometric plugins (`expo-local-authentication`, `expo-sqlite`).

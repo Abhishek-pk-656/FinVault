@@ -1,0 +1,51 @@
+name: FinVault Monorepo CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck & 196-Test Verification Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.1.0
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Turborepo Typecheck
+        run: pnpm turbo typecheck
+
+      - name: Turborepo Workspace Tests
+        run: pnpm turbo test
+
+      - name: Master 5-Tier 196-Test Verification Suite
+        run: |
+          node --experimental-strip-types tests/e2e/runner.ts
+          node --test tests/mobile/mobile.test.ts
+          node --experimental-strip-types tests/e2e/tier5-backend-adversarial.ts
+          node --experimental-strip-types tests/e2e/tier5-frontend-adversarial.ts
+          node --test tests/mobile/adversarial-stress.test.ts
+          node --test tests/mobile/adversarial.stress.ts
+          node --test packages/sync-engine/tests/sync-engine.test.ts

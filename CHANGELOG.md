@@ -10,6 +10,12 @@ All notable changes to this project will be documented in this file.
   - Formally documented that Python FastAPI, Alembic, Pytest, and Hypothesis are reserved strictly for the Phase 3 AI/ML sidecar service (categorization, OCR, embedding pipelines) and are never used in Phase 1–2 ledger or web/mobile tasks.
 - **Workspace Test Runner Harmonization**: Synchronized `@finvault/sync-engine` test script to native `node --test` harness matching Node.js SQLite integration, ensuring `pnpm turbo test` and `pnpm turbo typecheck` pass across all 5 workspace packages with zero errors and 196/196 test verification passing cleanly.
 - **Automated Verification, Record & Push Gate**: Upgraded `.agents/skills/verify-and-record/SKILL.md` and `AGENTS.md` to automate Git conventional commit and push upon completion of the 5-tier verification suite.
+- **Milestone 7 CI/CD & Deployment Readiness**:
+  - Created GitHub Actions automated CI gate (`.github/workflows/ci.yml`) enforcing frozen lockfile, Turborepo typecheck, and full 196-test verification suite on push and PR to `main`.
+  - Audited Supabase Deno Edge Functions and added root convenience scripts (`supabase:link`, `supabase:push`, `supabase:deploy-functions`).
+  - Configured Vercel web cockpit (`apps/web/vercel.json`) with Next.js framework preset and security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`).
+  - Configured Expo EAS standalone Android APK profile (`apps/mobile/eas.json`), package identifier `com.finvault.app`, and biometric/sqlite plugins in `apps/mobile/app.json`.
+  - Added `ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)` in `docs/10-ADR.md` and updated `docs/07-DEPLOYMENT-AND-OBSERVABILITY.md` with full deployment and rollback playbooks.
 
 ## [1.1.0] - 2026-11-11
 ### Added

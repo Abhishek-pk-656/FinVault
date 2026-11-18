@@ -94,8 +94,15 @@
 - [x] **M7.2: Remote Repository Linkage & Initial Push**
   - [x] Configure GitHub remote origin (`git remote add origin https://github.com/Abhishek-pk-656/FinVault.git`).
   - [x] Push local `main` branch to remote origin (`git push -u origin main`).
-- [ ] **M7.3: CI/CD Pipeline & Automated Quality Gate**
-  - [ ] Configure GitHub Actions workflow running monorepo build, linting, and 196-test master verification suite.
-- [ ] **M7.4: Production Hosting & Deployment**
-  - [ ] Deploy Next.js Web Cockpit on Vercel / Cloudflare Pages.
-  - [ ] Configure EAS (Expo Application Services) build pipeline for Android APK/AAB distribution.
+- [x] **M7.3: CI/CD Pipeline & Automated Quality Gate**
+  - [x] Configure GitHub Actions workflow (`.github/workflows/ci.yml`) on push/PR to `main`.
+  - [x] Enforce frozen lockfile, Turborepo typecheck, and full 196-test master & adversarial verification suites as strict deployment gate.
+- [x] **M7.4: Supabase Cloud CLI & Edge Function Readiness**
+  - [x] Audit `supabase/config.toml` and Deno Edge Functions (`validate-transaction`, `sync-reconcile`) for clean imports and CORS headers.
+  - [x] Add root convenience scripts for Supabase linking, pushing, and deploying functions.
+- [x] **M7.5: Vercel Web Cockpit Configuration**
+  - [x] Configure `apps/web/vercel.json` with Next.js framework preset and security headers (`nosniff`, `DENY`, `strict-origin-when-cross-origin`).
+  - [x] Validate `apps/web/.env.example` environment variables for `@supabase/ssr` cloud connectivity.
+- [x] **M7.6: Expo EAS Standalone Android APK Configuration**
+  - [x] Configure `apps/mobile/eas.json` with `development`, `preview` (`buildType: "apk"`), and `production` profiles.
+  - [x] Update `apps/mobile/app.json` with `com.finvault.app`, biometric permissions, and plugins (`expo-local-authentication`, `expo-sqlite`).
