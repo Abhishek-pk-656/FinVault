@@ -105,4 +105,6 @@
   - [x] Validate `apps/web/.env.example` environment variables for `@supabase/ssr` cloud connectivity.
 - [x] **M7.6: Expo EAS Standalone Android APK Configuration**
   - [x] Configure `apps/mobile/eas.json` with `development`, `preview` (`buildType: "apk"`), and `production` profiles.
-  - [x] Update `apps/mobile/app.json` with `com.finvault.app`, biometric permissions, and plugins (`expo-local-authentication`, `expo-sqlite`).
+  - [x] Update `apps/mobile/app.json` with `com.finvault.app`, biometric permissions, and plugins (`expo-local-authentication`).
+  - [x] Configure IPv4 network stack and Gradle properties (`apps/mobile/plugins/with-ipv4-gradle.js`, `eas.json` `GRADLE_OPTS`) resolving Linux runner IPv6 `downloadSQLite` network unreachable error.
+  - [x] Build standalone preview Android APK via Expo Application Services (EAS Build).

@@ -16,7 +16,8 @@
         {
           "faceIDPermission": "Allow FinVault to authenticate using Face ID or biometrics"
         }
-      ]
+      ],
+      "./plugins/with-ipv4-gradle.js"
     ],
     "android": {
       "adaptiveIcon": {
