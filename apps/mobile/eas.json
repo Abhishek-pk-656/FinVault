@@ -11,7 +11,9 @@
     "preview": {
       "distribution": "internal",
       "env": {
-        "GRADLE_OPTS": "-Dorg.gradle.jvmargs=\"-Xmx4g -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true\" -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true"
+        "GRADLE_OPTS": "-Dorg.gradle.jvmargs=\"-Xmx4g -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true\" -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://mphsbsdlfmsffdxrgupr.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_UrabvBv7tCHqmJdSz6PDMQ_RWF7R8cD"
       },
       "android": {
         "buildType": "apk"
@@ -20,7 +22,9 @@
     "production": {
       "autoIncrement": true,
       "env": {
-        "GRADLE_OPTS": "-Dorg.gradle.jvmargs=\"-Xmx4g -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true\" -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true"
+        "GRADLE_OPTS": "-Dorg.gradle.jvmargs=\"-Xmx4g -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true\" -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://mphsbsdlfmsffdxrgupr.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_UrabvBv7tCHqmJdSz6PDMQ_RWF7R8cD"
       }
     }
   },

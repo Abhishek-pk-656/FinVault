@@ -2,7 +2,7 @@
   "name": "@finvault/mobile",
   "version": "0.1.0",
   "private": true,
-  "main": "App.tsx",
+  "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",

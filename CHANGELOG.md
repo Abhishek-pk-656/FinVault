@@ -33,6 +33,12 @@ All notable changes to this project will be documented in this file.
     - Configured Metro bundler `resolveRequest` hook in `apps/mobile/metro.config.js` to alias `node:sqlite` to `apps/mobile/src/shims/node-sqlite-shim.js`, allowing React Native / Hermes release bundling while preserving Node.js test runner compatibility.
     - Created Expo config plugin `apps/mobile/plugins/with-ipv4-gradle.js` and injected `GRADLE_OPTS` in `apps/mobile/eas.json` forcing IPv4 network stack (`preferIPv4Stack=true`, `preferIPv4Addresses=true`) to permanently resolve cloud runner IPv6 socket unreachable errors during native `:expo-sqlite:downloadSQLite` compilation.
     - Successfully built and validated standalone Android preview APK via EAS Build (`230a0043-99e1-49a5-8769-bcc70891c5be`) with direct artifact download generated at `https://expo.dev/artifacts/eas/hqelyEBFoNy55sUr6RRe0XRGa_4NlM9cEIB5kdMSLLs.apk`.
+    - **Android Launch Crash Remediation (`"main" has not been registered`)**:
+      - Captured emulator `logcat` crash revealing uncalled `AppRegistry.registerComponent("main")` due to missing root registration in `App.tsx`.
+      - Created `apps/mobile/index.ts`, configured `"main": "index.ts"` in `apps/mobile/package.json`, and called `registerRootComponent(App)` in both entry paths.
+      - Created Botanical Minimalist `ErrorBoundary` (`apps/mobile/src/components/ErrorBoundary.tsx`) wrapping the root component tree to catch unexpected exceptions, display stack traces, and provide interactive recovery rather than crashing the process.
+      - Hardened `RootNavigator.tsx` with SQLite readiness spinner and error propagation to the boundary.
+      - Provisioned `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` in `apps/mobile/eas.json` `env` for consistent cloud builds.
   - Added `ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)` in `docs/10-ADR.md` and updated `docs/07-DEPLOYMENT-AND-OBSERVABILITY.md` with full deployment and rollback playbooks.
 
 ## [1.1.0] - 2026-11-11

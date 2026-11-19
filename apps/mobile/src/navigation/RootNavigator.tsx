@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import { View, StyleSheet, Animated, ActivityIndicator } from 'react-native';
+import { useFinVaultDatabase } from '../providers/DatabaseProvider';
 import { authenticateWithBiometrics } from '../lib/auth/biometrics';
 import { BiometricLockScreen } from '../screens/auth/BiometricLockScreen';
 import { TabNavigator } from './TabNavigator';
 import { TOKENS } from '../lib/theme/tokens';
 
 export const RootNavigator: React.FC = () => {
+  const { isReady, error } = useFinVaultDatabase();
   const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  // Propagate SQLite database initialization error to ErrorBoundary
+  if (error) {
+    throw error;
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -45,6 +52,14 @@ export const RootNavigator: React.FC = () => {
     });
   };
 
+  if (!isReady) {
+    return (
+      <View style={[styles.container, styles.loadingCenter]}>
+        <ActivityIndicator size="large" color={TOKENS.colors.softMint} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.inner, { opacity: fadeAnim }]}>
@@ -62,6 +77,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: TOKENS.colors.obsidianCarbon,
+  },
+  loadingCenter: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   inner: {
     flex: 1,
