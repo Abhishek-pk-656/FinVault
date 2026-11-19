@@ -25,6 +25,10 @@ All notable changes to this project will be documented in this file.
     - Hardened all `apps/web` Server Components (`/`, `/cash-flow`, `/transactions`, `/ious`) with server-side `isAuthenticatedSession()` redirect guards so unauthenticated requests cleanly navigate to `/login` with zero 500 crashes.
     - Updated `apps/web/src/app/login/page.tsx` demo button to set `finvault-demo` cookie for local interactive testing.
   - **Linked Cloud CLI Capabilities Protocol**: Updated `.agents/skills/db-migration-and-sync/SKILL.md` and `docs/11-ENV-AND-MCP.md` documenting authenticated agent execution for `npx supabase db push --remote`, `npx supabase functions deploy`, `npx vercel env ls`, and `npx vercel logs`.
+  - **Milestone 7.6 Expo EAS Android APK Configuration & Plugin Fix**:
+    - Removed redundant `"expo-sqlite"` config plugin entry in `apps/mobile/app.json` (autolinked natively in Expo SDK 51) while preserving `ExpoSQLiteAdapter` in `package.json`.
+    - Added `"cli": { "appVersionSource": "local" }` in `apps/mobile/eas.json` to resolve EAS CLI versioning warnings while keeping preview APK configuration.
+    - Verified `apps/mobile` configuration with `expo config --json` and configured live Supabase project credentials in `apps/mobile/.env`.
   - Added `ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)` in `docs/10-ADR.md` and updated `docs/07-DEPLOYMENT-AND-OBSERVABILITY.md` with full deployment and rollback playbooks.
 
 ## [1.1.0] - 2026-11-11

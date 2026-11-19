@@ -16,8 +16,7 @@
         {
           "faceIDPermission": "Allow FinVault to authenticate using Face ID or biometrics"
         }
-      ],
-      "expo-sqlite"
+      ]
     ],
     "android": {
       "adaptiveIcon": {
