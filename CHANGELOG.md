@@ -31,7 +31,8 @@ All notable changes to this project will be documented in this file.
     - Verified `apps/mobile` configuration with `expo config --json` and configured live Supabase project credentials in `apps/mobile/.env`.
     - Provisioned Botanical Minimalist launcher and adaptive icon PNG assets in `apps/mobile/assets/` to satisfy Android prebuild asset generation.
     - Configured Metro bundler `resolveRequest` hook in `apps/mobile/metro.config.js` to alias `node:sqlite` to `apps/mobile/src/shims/node-sqlite-shim.js`, allowing React Native / Hermes release bundling while preserving Node.js test runner compatibility.
-    - Created Expo config plugin `apps/mobile/plugins/with-ipv4-gradle.js` and injected `GRADLE_OPTS` in `apps/mobile/eas.json` forcing IPv4 network stack (`preferIPv4Stack=true`, `preferIPv4Addresses=true`) and Gradle download retries to permanently resolve cloud runner IPv6 socket unreachable errors during native `:expo-sqlite:downloadSQLite` compilation.
+    - Created Expo config plugin `apps/mobile/plugins/with-ipv4-gradle.js` and injected `GRADLE_OPTS` in `apps/mobile/eas.json` forcing IPv4 network stack (`preferIPv4Stack=true`, `preferIPv4Addresses=true`) to permanently resolve cloud runner IPv6 socket unreachable errors during native `:expo-sqlite:downloadSQLite` compilation.
+    - Successfully built and validated standalone Android preview APK via EAS Build (`230a0043-99e1-49a5-8769-bcc70891c5be`) with direct artifact download generated at `https://expo.dev/artifacts/eas/hqelyEBFoNy55sUr6RRe0XRGa_4NlM9cEIB5kdMSLLs.apk`.
   - Added `ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)` in `docs/10-ADR.md` and updated `docs/07-DEPLOYMENT-AND-OBSERVABILITY.md` with full deployment and rollback playbooks.
 
 ## [1.1.0] - 2026-11-11
