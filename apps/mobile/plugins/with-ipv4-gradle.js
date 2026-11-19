@@ -1,7 +1,7 @@
-const { withGradleProperties, withProjectBuildGradle, createRunOncePlugin } = require('@expo/config-plugins');
+const { withGradleProperties, createRunOncePlugin } = require('@expo/config-plugins');
 
 function withIpv4Gradle(config) {
-  config = withGradleProperties(config, (config) => {
+  return withGradleProperties(config, (config) => {
     const setProp = (key, value) => {
       const existing = config.modResults.find((p) => p.type === 'property' && p.key === key);
       if (existing) {
@@ -20,25 +20,6 @@ function withIpv4Gradle(config) {
 
     return config;
   });
-
-  config = withProjectBuildGradle(config, (config) => {
-    if (!config.modResults.contents.includes('downloadSQLite')) {
-      config.modResults.contents += `
-allprojects {
-  afterEvaluate { project ->
-    project.tasks.matching { it.name == 'downloadSQLite' }.configureEach {
-      retries 5
-      connectTimeout 15000
-      readTimeout 30000
-    }
-  }
-}
-`;
-    }
-    return config;
-  });
-
-  return config;
 }
 
 module.exports = createRunOncePlugin(withIpv4Gradle, 'with-ipv4-gradle', '1.0.0');
