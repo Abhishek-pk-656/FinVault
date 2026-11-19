@@ -107,4 +107,5 @@
   - [x] Configure `apps/mobile/eas.json` with `development`, `preview` (`buildType: "apk"`), and `production` profiles.
   - [x] Update `apps/mobile/app.json` with `com.finvault.app`, biometric permissions, and plugins (`expo-local-authentication`).
   - [x] Configure IPv4 network stack and Gradle properties (`apps/mobile/plugins/with-ipv4-gradle.js`, `eas.json` `GRADLE_OPTS`) resolving Linux runner IPv6 `downloadSQLite` network unreachable error.
-  - [x] Build standalone preview Android APK via Expo Application Services (EAS Build) (`230a0043-99e1-49a5-8769-bcc70891c5be` -> [hqelyEBFoNy55sUr6RRe0XRGa_4NlM9cEIB5kdMSLLs.apk](https://expo.dev/artifacts/eas/hqelyEBFoNy55sUr6RRe0XRGa_4NlM9cEIB5kdMSLLs.apk)).
+  - [x] Build standalone preview Android APK via Expo Application Services (EAS Build) (`513a600a-31b0-4bd1-b61b-3de1985c097d` -> [9-EkUzMywTE-lQPjU7u_G7UZ6adWSt3kxQWXInta69I.apk](https://expo.dev/artifacts/eas/9-EkUzMywTE-lQPjU7u_G7UZ6adWSt3kxQWXInta69I.apk)).
+  - [x] Verify live standalone APK on Android Emulator (`emulator-5554`): verified active process PID, Botanical navigation shell, and offline SQLite initialization.

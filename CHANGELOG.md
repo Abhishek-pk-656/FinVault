@@ -39,6 +39,9 @@ All notable changes to this project will be documented in this file.
       - Created Botanical Minimalist `ErrorBoundary` (`apps/mobile/src/components/ErrorBoundary.tsx`) wrapping the root component tree to catch unexpected exceptions, display stack traces, and provide interactive recovery rather than crashing the process.
       - Hardened `RootNavigator.tsx` with SQLite readiness spinner and error propagation to the boundary.
       - Provisioned `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` in `apps/mobile/eas.json` `env` for consistent cloud builds.
+      - Bundled `sqlite-amalgamation-3450300.zip` into `apps/mobile/downloads/` and injected Gradle task hook copying the archive during `createNativeDepsDirectories.doLast` while skipping `downloadSQLite`, eliminating remote network dependence on `sqlite.org`.
+      - Built standalone preview APK (`513a600a-31b0-4bd1-b61b-3de1985c097d` -> [9-EkUzMywTE-lQPjU7u_G7UZ6adWSt3kxQWXInta69I.apk](https://expo.dev/artifacts/eas/9-EkUzMywTE-lQPjU7u_G7UZ6adWSt3kxQWXInta69I.apk)).
+      - Installed and verified live on Android Emulator `emulator-5554`: process stays open (PID 9631), Botanical navigation shell rendered, and offline SQLite ledger active with 0 crashes.
   - Added `ADR-011: Managed Cloud Deployment Topology (Supabase Cloud + Vercel + Expo EAS APK)` in `docs/10-ADR.md` and updated `docs/07-DEPLOYMENT-AND-OBSERVABILITY.md` with full deployment and rollback playbooks.
 
 ## [1.1.0] - 2026-11-11
