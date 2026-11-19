@@ -22,18 +22,23 @@ function withIpv4Gradle(config) {
   });
 
   config = withProjectBuildGradle(config, (config) => {
-    if (!config.modResults.contents.includes('sqlite-amalgamation')) {
+    if (!config.modResults.contents.includes('createNativeDepsDirectories')) {
       config.modResults.contents += `
 subprojects { subproject ->
   def localZip = new File(rootDir, "../downloads/sqlite-amalgamation-3450300.zip")
-  subproject.tasks.matching { it.name == 'downloadSQLite' }.configureEach {
-    if (localZip.exists()) {
-      onlyIf { false }
+  if (localZip.exists()) {
+    subproject.tasks.matching { it.name == 'createNativeDepsDirectories' }.configureEach {
+      doLast {
+        def downloadTask = subproject.tasks.findByName('downloadSQLite')
+        if (downloadTask != null && downloadTask.dest != null) {
+          def destFile = (downloadTask.dest instanceof File) ? downloadTask.dest : new File(downloadTask.dest.toString())
+          destFile.parentFile.mkdirs()
+          java.nio.file.Files.copy(localZip.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+        }
+      }
     }
-  }
-  subproject.tasks.matching { it.name == 'prepareSQLite' }.configureEach {
-    if (localZip.exists()) {
-      from(zipTree(localZip))
+    subproject.tasks.matching { it.name == 'downloadSQLite' }.configureEach {
+      onlyIf { false }
     }
   }
 }
