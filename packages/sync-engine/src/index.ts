@@ -22,6 +22,7 @@ export * from './sync/delta-sync.ts';
 export * from './sync/lww-resolver.ts';
 export * from './operations/index.ts';
 export * from './utils/balance.ts';
+export * from './utils/uuid.ts';
 
 // Supabase client type shim for compilation independence
 export interface SupabaseClientLike {

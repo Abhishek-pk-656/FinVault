@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useFinVaultDatabase } from '../providers/DatabaseProvider';
+import { useAuth } from '../providers/AuthProvider';
+import { useSyncStatus } from '../providers/SyncProvider';
 import type { IOURecord } from '@finvault/db-types';
 
-export function useIOUs(userId: string = 'local-user') {
-  const { operations, adapter, isReady } = useFinVaultDatabase();
+export function useIOUs(explicitUserId?: string) {
+  const { operations, adapter, isReady, isProvisioned } = useFinVaultDatabase();
+  const { userId: authUserId } = useAuth();
+  const { notifyLocalMutation, dataRevision } = useSyncStatus();
+  const userId = explicitUserId ?? authUserId;
+
   const [ious, setIous] = useState<IOURecord[]>([]);
   const [lentMinor, setLentMinor] = useState<bigint>(0n);
   const [borrowedMinor, setBorrowedMinor] = useState<bigint>(0n);
@@ -48,12 +54,13 @@ export function useIOUs(userId: string = 'local-user') {
     if (!operations) throw new Error('Database not initialized');
     const res = await operations.settleIOU(iouId, amountMinor, accountId, userId);
     await loadIOUs();
+    await notifyLocalMutation();
     return res;
   };
 
   useEffect(() => {
-    loadIOUs();
-  }, [loadIOUs]);
+    void loadIOUs();
+  }, [loadIOUs, isProvisioned, dataRevision]);
 
   return { ious, lentMinor, borrowedMinor, loading, settleDebt, refreshIOUs: loadIOUs };
 }

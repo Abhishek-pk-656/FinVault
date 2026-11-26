@@ -57,6 +57,13 @@ export class OutboxQueueManager {
     }));
   }
 
+  public async getPendingCount(): Promise<number> {
+    const row = await this.adapter.queryOne<{ cnt: number | bigint }>(
+      `SELECT COUNT(*) AS cnt FROM sync_queue WHERE status IN ('PENDING', 'IN_FLIGHT', 'FAILED')`
+    );
+    return row ? Number(row.cnt) : 0;
+  }
+
   public async markInFlight(id: string): Promise<void> {
     await this.adapter.run(
       `UPDATE sync_queue SET status = 'IN_FLIGHT' WHERE id = ?`,

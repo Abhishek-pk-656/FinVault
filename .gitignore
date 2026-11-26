@@ -27,6 +27,7 @@ apps/mobile/ios/
 .env.*
 !.env.example
 apps/web/.env.test.local
+apps/mobile/.env.test.local
 
 # Playwright
 apps/web/playwright/.auth/

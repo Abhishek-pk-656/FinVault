@@ -42,6 +42,12 @@ appId: com.finvault.app
 - tapOn:
     text: "OK"
 - assertVisible:
+    id: "sync-status-badge"
+- scrollUntilVisible:
+    element:
+      id: "transaction-entry-heading"
+    direction: UP
+- assertVisible:
     id: "transaction-entry-heading"
 - tapOn:
     id: "tab-net-worth"

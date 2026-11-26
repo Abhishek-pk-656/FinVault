@@ -16,7 +16,8 @@ export interface SyncResult {
 export interface SyncOptions {
   lastSyncTimestamp?: string;
   userId?: string;
-  session?: { userId: string; email?: string; role?: string };
+  accessToken?: string;
+  session?: { userId: string; email?: string; role?: string; accessToken?: string };
 }
 
 export async function executeDeltaSync(
@@ -35,6 +36,34 @@ export async function executeDeltaSync(
     pushedCount: 0,
     pulledCount: 0
   };
+
+  // Resolve and attach the active Supabase session JWT when syncing against Supabase
+  let activeJwt = options.accessToken || options.session?.accessToken;
+  let resolvedUserId = options.userId || options.session?.userId;
+
+  if (supabaseClient?.auth && typeof supabaseClient.auth.getSession === 'function') {
+    try {
+      const { data } = await supabaseClient.auth.getSession();
+      const liveSession = data?.session;
+      if (liveSession?.access_token) {
+        activeJwt = activeJwt || liveSession.access_token;
+      }
+      if (liveSession?.user?.id && (!resolvedUserId || resolvedUserId === 'local-user')) {
+        resolvedUserId = liveSession.user.id;
+      }
+    } catch {
+      // Proceed cleanly; remote calls below will report if unauthenticated/offline
+    }
+  }
+
+  if (activeJwt) {
+    if (typeof supabaseClient?.functions?.setAuth === 'function') {
+      supabaseClient.functions.setAuth(activeJwt);
+    }
+    if (typeof supabaseClient?.realtime?.setAuth === 'function') {
+      supabaseClient.realtime.setAuth(activeJwt);
+    }
+  }
 
   // -------------------------------------------------------------
   // Phase 1: PUSH pending offline mutations in chronological order
@@ -111,8 +140,10 @@ export async function executeDeltaSync(
           }
 
           if (typeof supabaseClient.rpc === 'function') {
+            const rpcUserId =
+              payload.user_id && payload.user_id !== 'local-user' ? payload.user_id : resolvedUserId;
             const { error: rpcErr } = await supabaseClient.rpc('post_transaction', {
-              p_user_id: payload.user_id || options.userId,
+              p_user_id: rpcUserId,
               p_idempotency_key: idempKey,
               p_transaction_date: payload.transaction_date,
               p_description: payload.description,
@@ -121,9 +152,11 @@ export async function executeDeltaSync(
             });
             if (rpcErr) throw new Error(rpcErr.message);
           } else {
+            const insertUserId =
+              payload.user_id && payload.user_id !== 'local-user' ? payload.user_id : resolvedUserId;
             const { error: txErr } = await supabaseClient.from('transactions').insert({
               id: payload.id || item.record_id,
-              user_id: payload.user_id || options.userId,
+              user_id: insertUserId,
               idempotency_key: idempKey,
               transaction_date: payload.transaction_date,
               description: payload.description,

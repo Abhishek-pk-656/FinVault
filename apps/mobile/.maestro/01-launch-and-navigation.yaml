@@ -1,17 +1,49 @@
 appId: com.finvault.app
 ---
 - launchApp:
-    clearState: false
+    clearState: true
 - extendedWaitUntil:
     visible:
-      id: "net-worth-heading"
+      id: "mobile-google-login-btn"
     timeout: 15000
 - assertNotVisible:
     text: ".*has stopped.*"
 - assertNotVisible:
     text: ".*isn't responding.*"
+- tapOn:
+    id: "mobile-email-input"
+- inputText: "${E2E_TEST_EMAIL}"
+- hideKeyboard
+- tapOn:
+    id: "mobile-password-input"
+- inputText: "${E2E_TEST_PASSWORD}"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "mobile-email-login-btn"
+    direction: DOWN
+- tapOn:
+    id: "mobile-email-login-btn"
+- extendedWaitUntil:
+    visible:
+      id: "net-worth-heading"
+    timeout: 20000
+- assertVisible:
+    id: "sync-status-badge"
+- assertVisible:
+    id: "account-menu-btn"
 - assertVisible:
     id: "net-worth-assets-heading"
+- tapOn:
+    id: "account-menu-btn"
+- assertVisible:
+    id: "account-email-text"
+- assertVisible:
+    id: "sync-now-btn"
+- assertVisible:
+    id: "sign-out-btn"
+- tapOn:
+    id: "account-modal-close-btn"
 - tapOn:
     id: "tab-cash-flow"
 - assertVisible:

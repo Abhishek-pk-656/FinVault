@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { authenticateWithBiometrics } from '../../lib/auth/biometrics';
+import { useAuth } from '../../providers/AuthProvider';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { TOKENS } from '../../lib/theme/tokens';
@@ -12,6 +13,7 @@ interface BiometricLockScreenProps {
 export const BiometricLockScreen: React.FC<BiometricLockScreenProps> = ({
   onUnlockSuccess,
 }) => {
+  const { userEmail, signOut } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
 
@@ -41,6 +43,14 @@ export const BiometricLockScreen: React.FC<BiometricLockScreenProps> = ({
           Botanical Minimalist Personal Finance & Wealth Ledger
         </Text>
 
+        {userEmail && (
+          <View style={styles.emailPill}>
+            <Text testID="biometric-user-email" style={styles.emailText} numberOfLines={1}>
+              {userEmail}
+            </Text>
+          </View>
+        )}
+
         {errorMessage && (
           <View style={styles.errorBox}>
             <Text style={styles.errorText}>{errorMessage}</Text>
@@ -55,6 +65,15 @@ export const BiometricLockScreen: React.FC<BiometricLockScreenProps> = ({
           onPress={handleUnlock}
           style={styles.unlockBtn}
         />
+
+        <TouchableOpacity
+          testID="biometric-signout-btn"
+          onPress={() => void signOut()}
+          style={styles.signOutLink}
+          disabled={isAuthenticating}
+        >
+          <Text style={styles.signOutText}>Switch Account / Sign Out</Text>
+        </TouchableOpacity>
       </Card>
     </View>
   );
@@ -92,7 +111,20 @@ const styles = StyleSheet.create({
     color: TOKENS.colors.slateBase,
     textAlign: 'center',
     lineHeight: 18,
-    marginBottom: 24,
+    marginBottom: 16,
+  },
+  emailPill: {
+    backgroundColor: TOKENS.colors.mossCeladon,
+    borderRadius: TOKENS.radii.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    marginBottom: 20,
+    maxWidth: '100%',
+  },
+  emailText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: TOKENS.colors.obsidianCarbon,
   },
   errorBox: {
     backgroundColor: 'rgba(224, 106, 85, 0.15)',
@@ -111,5 +143,15 @@ const styles = StyleSheet.create({
   },
   unlockBtn: {
     width: '100%',
+  },
+  signOutLink: {
+    marginTop: 14,
+    paddingVertical: 6,
+  },
+  signOutText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: TOKENS.colors.slateBase,
+    textDecorationLine: 'underline',
   },
 });

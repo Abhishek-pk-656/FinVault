@@ -116,3 +116,8 @@
   - [x] Instrument `apps/mobile` navigation/screens with semantic `testID`s, add Maestro flows (`apps/mobile/.maestro/`), `scripts/ensure-emulator.mjs`, and `scripts/check-logcat.mjs`.
   - [x] Upgrade `scaffold-feature`, 4-layer `verify-and-record`, `AGENTS.md`, `docs/06-TESTING-AND-QA.md`, and `docs/11-ENV-AND-MCP.md`.
   - [x] Add autonomous EAS APK build-download-install script (`apps/mobile/scripts/sync-emulator-apk.mjs`, `qa:sync-apk`) and Botanical web `icon.svg`/`favicon.ico` eliminating `/login` 404 console errors.
+- [x] **M7.8: Mobile Supabase Google OAuth PKCE, Persistent Auth & Sync Status (`apps/mobile`)**
+  - [x] Install Expo SDK 51 auth packages (`expo-web-browser`, `expo-auth-session`, `expo-linking`, `expo-crypto`) with `scheme: "finvault"` and persistent `ExpoSecureStoreAdapter` sessions.
+  - [x] Implement Google OAuth PKCE (`finvault://auth/callback`, `WebBrowser.openAuthSessionAsync`, `exchangeCodeForSession`), Botanical `LoginScreen` (`mobile-google-login-btn`), and session/biometric gate (`AuthProvider`, `resolveAuthGateScreen`, `BiometricLockScreen`).
+  - [x] Add visible sync status pill (`Synced` vs `Pending offline (N)`), Account & Sync modal (`Sync Now`, `Sign Out`, user email) in `TabNavigator.tsx`, and attach Supabase session JWT in `packages/sync-engine` (`executeDeltaSync`) + `SyncProvider`.
+  - [x] Verify with `tests/mobile/auth-gate.test.ts` (18 mobile tests passing), updated Maestro flows (`3/3` passing against EAS preview APK on `emulator-5554`), `mobile-mcp` live inspection, `qa:logcat-check`, Playwright (`4/4`), and Browser Subagent.

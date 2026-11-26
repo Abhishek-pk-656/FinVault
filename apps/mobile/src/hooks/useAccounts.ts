@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useFinVaultDatabase } from '../providers/DatabaseProvider';
+import { useAuth } from '../providers/AuthProvider';
+import { useSyncStatus } from '../providers/SyncProvider';
 import type { Account } from '@finvault/db-types';
 
-export function useAccounts(userId: string = 'local-user') {
-  const { operations, isReady } = useFinVaultDatabase();
+export function useAccounts(explicitUserId?: string) {
+  const { operations, isReady, isProvisioned } = useFinVaultDatabase();
+  const { userId: authUserId } = useAuth();
+  const { dataRevision } = useSyncStatus();
+  const userId = explicitUserId ?? authUserId;
+
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [netWorthMinor, setNetWorthMinor] = useState<bigint>(0n);
   const [safeToSpendMinor, setSafeToSpendMinor] = useState<bigint>(0n);
@@ -40,8 +46,8 @@ export function useAccounts(userId: string = 'local-user') {
   }, [operations, isReady, userId]);
 
   useEffect(() => {
-    refreshAccounts();
-  }, [refreshAccounts]);
+    void refreshAccounts();
+  }, [refreshAccounts, isProvisioned, dataRevision]);
 
   return { accounts, netWorthMinor, safeToSpendMinor, loading, refreshAccounts };
 }

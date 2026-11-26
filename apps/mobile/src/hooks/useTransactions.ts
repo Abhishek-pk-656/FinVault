@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useFinVaultDatabase } from '../providers/DatabaseProvider';
+import { useAuth } from '../providers/AuthProvider';
+import { useSyncStatus } from '../providers/SyncProvider';
 import type { Transaction, NewTransactionPayload } from '@finvault/db-types';
 
-export function useTransactions(userId: string = 'local-user') {
-  const { operations, adapter, isReady } = useFinVaultDatabase();
+export function useTransactions(explicitUserId?: string) {
+  const { operations, adapter, isReady, isProvisioned } = useFinVaultDatabase();
+  const { userId: authUserId } = useAuth();
+  const { notifyLocalMutation, dataRevision } = useSyncStatus();
+  const userId = explicitUserId ?? authUserId;
+
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -37,12 +43,13 @@ export function useTransactions(userId: string = 'local-user') {
       console.warn(`[FinVault Mobile] Offline transaction took ${latency.toFixed(2)}ms (SLA is 50ms)`);
     }
     await loadTransactions();
+    await notifyLocalMutation();
     return created;
   };
 
   useEffect(() => {
-    loadTransactions();
-  }, [loadTransactions]);
+    void loadTransactions();
+  }, [loadTransactions, isProvisioned, dataRevision]);
 
   return { transactions, postOfflineTransaction, loading, refreshTransactions: loadTransactions };
 }

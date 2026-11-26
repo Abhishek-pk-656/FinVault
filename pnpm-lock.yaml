@@ -38,6 +38,15 @@ importers:
       expo:
         specifier: ~51.0.0
         version: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+      expo-auth-session:
+        specifier: ~5.5.2
+        version: 5.5.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      expo-crypto:
+        specifier: ~13.0.2
+        version: 13.0.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      expo-linking:
+        specifier: ~6.3.1
+        version: 6.3.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
       expo-local-authentication:
         specifier: ~14.0.0
         version: 14.0.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
@@ -50,6 +59,9 @@ importers:
       expo-status-bar:
         specifier: ~1.12.1
         version: 1.12.1
+      expo-web-browser:
+        specifier: ~13.0.3
+        version: 13.0.3(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -2883,13 +2895,26 @@ packages:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
 
+  expo-application@5.9.1:
+    resolution: {integrity: sha512-uAfLBNZNahnDZLRU41ZFmNSKtetHUT9Ua557/q189ua0AWV7pQjoVAx49E4953feuvqc9swtU3ScZ/hN1XO/FQ==}
+    peerDependencies:
+      expo: '*'
+
   expo-asset@10.0.10:
     resolution: {integrity: sha512-0qoTIihB79k+wGus9wy0JMKq7DdenziVx3iUkGvMAy2azscSgWH6bd2gJ9CGnhC6JRd3qTMFBL0ou/fx7WZl7A==}
     peerDependencies:
       expo: '*'
 
+  expo-auth-session@5.5.2:
+    resolution: {integrity: sha512-fgqrNz9FhCl/kNyU2Vy2AmLWk+X7vmgiGN2KVUgB8yLHl/tPogYLpNOiqFl/pMLMveoKjPpVOVfbz3RTJHJoTg==}
+
   expo-constants@16.0.2:
     resolution: {integrity: sha512-9tNY3OVO0jfiMzl7ngb6IOyR5VFzNoN5OOazUWoeGfmMqVB5kltTemRvKraK9JRbBKIw+SOYLEmF0sEqgFZ6OQ==}
+    peerDependencies:
+      expo: '*'
+
+  expo-crypto@13.0.2:
+    resolution: {integrity: sha512-7f/IMPYJZkBM21LNEMXGrNo/0uXSVfZTwufUdpNKedJR0fm5fH4DCSN79ZddlV26nF90PuXjK2inIbI6lb0qRA==}
     peerDependencies:
       expo: '*'
 
@@ -2907,6 +2932,9 @@ packages:
     resolution: {integrity: sha512-kKiwkVg/bY0AJ5q1Pxnm/GvpeB6hbNJhcFsoOWDh2NlpibhCLaHL826KHUM+WsnJRbVRxJ+K9vbPRHEMvFpVyw==}
     peerDependencies:
       expo: '*'
+
+  expo-linking@6.3.1:
+    resolution: {integrity: sha512-xuZCntSBGWCD/95iZ+mTUGTwHdy8Sx+immCqbUBxdvZ2TN61P02kKg7SaLS8A4a/hLrSCwrg5tMMwu5wfKr35g==}
 
   expo-local-authentication@14.0.1:
     resolution: {integrity: sha512-kAwUD1wEqj1fhwQgIHlP4H/JV9AcX+NO3BJwhPM2HuCFS0kgx2wvcHisnKBSTRyl8u5Jt4odzMyQkDJystwUTg==}
@@ -2932,6 +2960,11 @@ packages:
 
   expo-status-bar@1.12.1:
     resolution: {integrity: sha512-/t3xdbS8KB0prj5KG5w7z+wZPFlPtkgs95BsmrP/E7Q0xHXTcDcQ6Cu2FkFuRM+PKTb17cJDnLkawyS5vDLxMA==}
+
+  expo-web-browser@13.0.3:
+    resolution: {integrity: sha512-HXb7y82ApVJtqk8tManyudtTrCtx8xcUnVzmJECeHCB0SsWSQ+penVLZxJkcyATWoJOsFMnfVSVdrTcpKKGszQ==}
+    peerDependencies:
+      expo: '*'
 
   expo@51.0.39:
     resolution: {integrity: sha512-Cs/9xopyzJrpXWbyVUZnr37rprdFJorRgfSp6cdBfvbjxZeKnw2MEu7wJwV/s626i5lZTPGjZPHUF9uQvt51cg==}
@@ -9056,6 +9089,10 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
 
+  expo-application@5.9.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
+    dependencies:
+      expo: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+
   expo-asset@10.0.10(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
     dependencies:
       expo: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
@@ -9065,6 +9102,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  expo-auth-session@5.5.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
+    dependencies:
+      expo-application: 5.9.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      expo-constants: 16.0.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      expo-crypto: 13.0.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      expo-linking: 6.3.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      expo-web-browser: 13.0.3(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      invariant: 2.2.4
+    transitivePeerDependencies:
+      - expo
+      - supports-color
+
   expo-constants@16.0.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
     dependencies:
       '@expo/config': 9.0.4
@@ -9072,6 +9121,11 @@ snapshots:
       expo: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
     transitivePeerDependencies:
       - supports-color
+
+  expo-crypto@13.0.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
+    dependencies:
+      base64-js: 1.5.1
+      expo: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
 
   expo-file-system@17.0.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
     dependencies:
@@ -9085,6 +9139,14 @@ snapshots:
   expo-keep-awake@13.0.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
     dependencies:
       expo: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
+
+  expo-linking@6.3.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
+    dependencies:
+      expo-constants: 16.0.2(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0))
+      invariant: 2.2.4
+    transitivePeerDependencies:
+      - expo
+      - supports-color
 
   expo-local-authentication@14.0.1(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
     dependencies:
@@ -9115,6 +9177,10 @@ snapshots:
       expo: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
 
   expo-status-bar@1.12.1: {}
+
+  expo-web-browser@13.0.3(expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)):
+    dependencies:
+      expo: 51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0)
 
   expo@51.0.39(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(react-native@0.74.1(@babel/core@7.29.13)(@babel/preset-env@7.29.7(@babel/core@7.29.13))(@types/react@18.2.79)(react@18.2.0))(react@18.2.0):
     dependencies:

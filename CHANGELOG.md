@@ -18,6 +18,11 @@ All notable changes to this project will be documented in this file.
   - Fixed Android status bar top inset overlap in `TabNavigator.tsx` and `ErrorBoundary.tsx` via explicit `StatusBar.currentHeight` padding, hardened `check-logcat.mjs` against `uiautomator`/`UiAutomationService` harness noise, and enforced sequential Layer 3 QA (`qa:reset-uiautomator` + cooldown) in `verify-and-record`.
   - Added autonomous EAS APK build/download/install pipeline (`apps/mobile/scripts/sync-emulator-apk.mjs`, `qa:sync-apk`) with content-hash caching in gitignored `apps/mobile/.cache/`, wired into `verify-and-record` Layer 3, plus Botanical `apps/web/src/app/icon.svg` and `public/favicon.ico` eliminating `/login` favicon 404 errors.
   - Pinned Maestro Android driver port (`--driver-host-port 7001`) in `apps/mobile/package.json` and extended `qa:reset-uiautomator` to terminate resident `com.mobilenext.mobilecli.DeviceServer` (`UiAutomationService`) processes so all 3 Maestro flows pass deterministically on Android 16 (`emulator-5554`).
+- **Mobile Supabase Auth, Biometric Gate & Cloud Sync (`apps/mobile`, `packages/sync-engine`)**:
+  - Installed Expo SDK 51 auth packages (`expo-web-browser`, `expo-auth-session`, `expo-linking`, `expo-crypto`) and implemented Google OAuth PKCE (`finvault://auth/callback` via `WebBrowser.openAuthSessionAsync` + `exchangeCodeForSession`) plus email/password sign-in inside `apps/mobile/src/lib/auth/oauth.ts`.
+  - Added Botanical Minimalist `LoginScreen.tsx` (`mobile-google-login-btn`), `AuthProvider.tsx`, and `resolveAuthGateScreen` (`auth-gate.ts`) gating unauthenticated launches to `LOGIN` (`__DEV__ === false` never bypasses) and enforcing `BiometricLockScreen` when restoring persisted sessions.
+  - Wired `SyncProvider.tsx`, `DatabaseProvider.tsx`, and `packages/sync-engine` (`executeDeltaSync`, `OutboxQueueManager.getPendingCount`) to attach active Supabase session JWTs, generate RFC4122 UUID idempotency keys, display live `Synced` / `Pending offline (N)` status and Account/Sync modal (`Sync Now`, `Sign Out`) in `TabNavigator.tsx`.
+  - Added adversarial & unit coverage in `tests/mobile/auth-gate.test.ts` and updated `01-launch-and-navigation.yaml`, `02-offline-transaction-flow.yaml`, and `scripts/run-maestro.mjs` (`3/3` Maestro flows passing on live EAS preview APK).
 
 ## [1.2.0] - 2026-11-18
 ### Changed

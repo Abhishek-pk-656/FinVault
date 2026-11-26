@@ -15,6 +15,7 @@ import { Button } from '../components/ui/Button';
 import { BalanceBadge } from '../components/ui/BalanceBadge';
 import { AmountInput } from '../components/ui/AmountInput';
 import { TOKENS } from '../lib/theme/tokens';
+import { generateUUID } from '@finvault/sync-engine';
 import type { JournalDirection } from '@finvault/db-types';
 
 interface LegDraft {
@@ -114,7 +115,7 @@ export const TransactionEntryScreen: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      const idempotencyKey = `tx-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      const idempotencyKey = generateUUID();
       await postOfflineTransaction({
         idempotency_key: idempotencyKey,
         transaction_date: date,

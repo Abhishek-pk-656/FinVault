@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Animated, ActivityIndicator } from 'react-native';
 import { useFinVaultDatabase } from '../providers/DatabaseProvider';
-import { authenticateWithBiometrics } from '../lib/auth/biometrics';
+import { useAuth } from '../providers/AuthProvider';
+import { resolveAuthGateScreen } from '../lib/auth/auth-gate';
+import { LoginScreen } from '../screens/auth/LoginScreen';
 import { BiometricLockScreen } from '../screens/auth/BiometricLockScreen';
 import { TabNavigator } from './TabNavigator';
 import { TOKENS } from '../lib/theme/tokens';
 
 export const RootNavigator: React.FC = () => {
-  const { isReady, error } = useFinVaultDatabase();
-  const [isUnlocked, setIsUnlocked] = useState<boolean>(false);
+  const { isReady, isProvisioned, error } = useFinVaultDatabase();
+  const { session, isAuthLoading, isBiometricUnlocked, unlockBiometrics } = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   // Propagate SQLite database initialization error to ErrorBoundary
@@ -16,18 +18,13 @@ export const RootNavigator: React.FC = () => {
     throw error;
   }
 
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      const res = await authenticateWithBiometrics();
-      if (mounted && res.success) {
-        setIsUnlocked(true);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const activeScreen = resolveAuthGateScreen({
+    isInitializing: !isReady || isAuthLoading || (Boolean(session) && !isProvisioned),
+    hasSession: Boolean(session),
+    isBiometricUnlocked,
+    isDev: typeof __DEV__ !== 'undefined' ? __DEV__ : false,
+    bypassEnv: process.env.EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC,
+  });
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -35,7 +32,7 @@ export const RootNavigator: React.FC = () => {
       duration: TOKENS.motion.durationMs,
       useNativeDriver: true,
     }).start();
-  }, [isUnlocked]);
+  }, [activeScreen, fadeAnim]);
 
   const handleUnlockSuccess = () => {
     Animated.timing(fadeAnim, {
@@ -43,7 +40,7 @@ export const RootNavigator: React.FC = () => {
       duration: 75,
       useNativeDriver: true,
     }).start(() => {
-      setIsUnlocked(true);
+      unlockBiometrics();
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 75,
@@ -52,9 +49,9 @@ export const RootNavigator: React.FC = () => {
     });
   };
 
-  if (!isReady) {
+  if (activeScreen === 'LOADING') {
     return (
-      <View style={[styles.container, styles.loadingCenter]}>
+      <View testID="mobile-loading-screen" style={[styles.container, styles.loadingCenter]}>
         <ActivityIndicator size="large" color={TOKENS.colors.softMint} />
       </View>
     );
@@ -63,11 +60,11 @@ export const RootNavigator: React.FC = () => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.inner, { opacity: fadeAnim }]}>
-        {!isUnlocked ? (
+        {activeScreen === 'LOGIN' && <LoginScreen />}
+        {activeScreen === 'BIOMETRIC_LOCK' && (
           <BiometricLockScreen onUnlockSuccess={handleUnlockSuccess} />
-        ) : (
-          <TabNavigator />
         )}
+        {activeScreen === 'UNLOCKED' && <TabNavigator />}
       </Animated.View>
     </View>
   );
