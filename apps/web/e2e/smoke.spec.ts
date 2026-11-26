@@ -22,6 +22,9 @@ test.describe('Unauthenticated Login Gate', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test('/login renders cleanly with Google OAuth CTA and zero errors', async ({ page }) => {
+    const faviconRes = await page.request.get('/favicon.ico');
+    expect(faviconRes.status()).toBe(200);
+
     await page.goto('/login');
     await expect(page.getByRole('heading', { name: 'FinVault' })).toBeVisible();
     await expect(page.getByRole('button', { name: /Continue with Google \(Gmail\)/i })).toBeVisible();
