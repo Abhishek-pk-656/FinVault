@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
   - Added `"noEmit": true` to `apps/mobile/tsconfig.json` resolving `TS5096`.
   - Added strictly dev-only biometric bypass (`canBypassBiometricAuth` guarded by `__DEV__ && EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC === 'true'`) with adversarial tests in `tests/mobile/biometric-bypass.test.ts`.
   - Instrumented mobile screens and navigation with semantic `testID` props, added baseline Maestro flows (`apps/mobile/.maestro/`), `scripts/ensure-emulator.mjs` (`qa:emulator-start`, `qa:emulator-stop`), and `scripts/check-logcat.mjs` (`qa:logcat-check`).
+  - Fixed Android status bar top inset overlap in `TabNavigator.tsx` and `ErrorBoundary.tsx` via explicit `StatusBar.currentHeight` padding, hardened `check-logcat.mjs` against `uiautomator`/`UiAutomationService` harness noise, and enforced sequential Layer 3 QA (`qa:reset-uiautomator` + cooldown) in `verify-and-record`.
 
 ## [1.2.0] - 2026-11-18
 ### Changed

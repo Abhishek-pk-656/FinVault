@@ -1,5 +1,5 @@
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { TOKENS } from '../lib/theme/tokens';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: TOKENS.colors.obsidianCarbon,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 36) : 0,
   },
   scrollContent: {
     flexGrow: 1,

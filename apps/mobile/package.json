@@ -12,6 +12,7 @@
     "test": "node --test ../../tests/mobile/mobile.test.ts ../../tests/mobile/biometric-bypass.test.ts",
     "test:maestro": "maestro test .maestro/",
     "qa:logcat-check": "node scripts/check-logcat.mjs",
+    "qa:reset-uiautomator": "adb shell am force-stop dev.mobile.maestro && adb shell am force-stop dev.mobile.maestro.test",
     "qa:emulator-start": "node scripts/ensure-emulator.mjs",
     "qa:emulator-stop": "adb emu kill",
     "typecheck": "tsc --noEmit"

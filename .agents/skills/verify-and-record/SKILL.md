@@ -11,12 +11,13 @@ description: Executes 4-layer verification (monorepo tests, live Web Playwright 
    - Start `apps/web` locally (`http://localhost:3000`) and use the Antigravity Browser Subagent (`/browser`) to open both the newly modified route and at least two existing routes (`/`, `/cash-flow`, `/transactions`, `/ious`).
    - Visually inspect screenshots to confirm zero console errors, zero 5xx network errors, zero layout clipping, and strict compliance with FinVault Botanical Minimalist tokens and max 3 component groups per view.
 3. **Layer 3 — Live Mobile Regression, Visual & Crash QA (Required whenever `apps/mobile`, `packages/ui`, or `packages/sync-engine` changed):**
-   - Run `adb devices` to check if `emulator-5554` (or a connected Android device) is active.
-   - If active:
-     - Clear logcat (`adb logcat -c`).
-     - Run `pnpm --filter @finvault/mobile test:maestro` to replay all existing mobile regression flows.
-     - Use `mobile-mcp` to inspect the live screen hierarchy and take a visual screenshot of the modified screen to confirm layout and Botanical Minimalist consistency.
-     - Run `pnpm --filter @finvault/mobile qa:logcat-check` to confirm zero fatal Android or React Native JS exceptions.
+   - Run `adb devices` to check if `emulator-5554` (or a connected Android device) is active (or boot with `pnpm --filter @finvault/mobile qa:emulator-start`).
+   - If active, ALWAYS execute mobile QA tools sequentially (never in parallel) to prevent `UiAutomationService` collisions:
+     a) Kill any lingering UIAutomator processes (`adb shell am force-stop dev.mobile.maestro` and `adb shell am force-stop dev.mobile.maestro.test`, or `pnpm --filter @finvault/mobile qa:reset-uiautomator`) and clear logs (`adb logcat -c`).
+     b) Run `pnpm --filter @finvault/mobile test:maestro` alone until it finishes.
+     c) Stop Maestro's Android driver (`adb shell am force-stop dev.mobile.maestro` and `adb shell am force-stop dev.mobile.maestro.test`) and wait 2 seconds so Android releases `UiAutomationService`.
+     d) Only then use `mobile-mcp` to inspect the live screen hierarchy and take a visual screenshot of the modified screen to confirm layout and Botanical Minimalist consistency.
+     e) Finally, run `pnpm --filter @finvault/mobile qa:logcat-check` to confirm zero fatal Android or React Native JS exceptions from `com.finvault.app`.
    - If no emulator is booted, explicitly warn the user in the final summary that Layer 3 live mobile QA was skipped because `emulator-5554` was offline, and do NOT claim mobile UI was visually verified.
 4. **Layer 4 — Record & Automated Git Gate:**
    - Mark completed tasks `[x]` in `TASKS.md` and append a concise entry to `CHANGELOG.md`.

@@ -6,6 +6,8 @@ import {
   StyleSheet,
   SafeAreaView,
   Animated,
+  Platform,
+  StatusBar,
 } from 'react-native';
 import { TOKENS } from '../lib/theme/tokens';
 import { NetWorthScreen } from '../screens/NetWorthScreen';
@@ -94,6 +96,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: TOKENS.colors.obsidianCarbon,
+    paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight ?? 36) : 0,
   },
   screenContainer: {
     flex: 1,
