@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
   - Instrumented mobile screens and navigation with semantic `testID` props, added baseline Maestro flows (`apps/mobile/.maestro/`), `scripts/ensure-emulator.mjs` (`qa:emulator-start`, `qa:emulator-stop`), and `scripts/check-logcat.mjs` (`qa:logcat-check`).
   - Fixed Android status bar top inset overlap in `TabNavigator.tsx` and `ErrorBoundary.tsx` via explicit `StatusBar.currentHeight` padding, hardened `check-logcat.mjs` against `uiautomator`/`UiAutomationService` harness noise, and enforced sequential Layer 3 QA (`qa:reset-uiautomator` + cooldown) in `verify-and-record`.
   - Added autonomous EAS APK build/download/install pipeline (`apps/mobile/scripts/sync-emulator-apk.mjs`, `qa:sync-apk`) with content-hash caching in gitignored `apps/mobile/.cache/`, wired into `verify-and-record` Layer 3, plus Botanical `apps/web/src/app/icon.svg` and `public/favicon.ico` eliminating `/login` favicon 404 errors.
+  - Pinned Maestro Android driver port (`--driver-host-port 7001`) in `apps/mobile/package.json` and extended `qa:reset-uiautomator` to terminate resident `com.mobilenext.mobilecli.DeviceServer` (`UiAutomationService`) processes so all 3 Maestro flows pass deterministically on Android 16 (`emulator-5554`).
 
 ## [1.2.0] - 2026-11-18
 ### Changed
