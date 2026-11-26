@@ -115,3 +115,4 @@
   - [x] Add strictly dev-only mobile biometric bypass (`apps/mobile/src/lib/auth/biometric-bypass.ts`) with adversarial test suite (`tests/mobile/biometric-bypass.test.ts`).
   - [x] Instrument `apps/mobile` navigation/screens with semantic `testID`s, add Maestro flows (`apps/mobile/.maestro/`), `scripts/ensure-emulator.mjs`, and `scripts/check-logcat.mjs`.
   - [x] Upgrade `scaffold-feature`, 4-layer `verify-and-record`, `AGENTS.md`, `docs/06-TESTING-AND-QA.md`, and `docs/11-ENV-AND-MCP.md`.
+  - [x] Add autonomous EAS APK build-download-install script (`apps/mobile/scripts/sync-emulator-apk.mjs`, `qa:sync-apk`) and Botanical web `icon.svg`/`favicon.ico` eliminating `/login` 404 console errors.

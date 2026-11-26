@@ -10,9 +10,9 @@ description: Executes 4-layer verification (monorepo tests, live Web Playwright 
    - Run `pnpm --filter @finvault/web test:e2e` (all Playwright regression specs must pass so older routes are never broken).
    - Start `apps/web` locally (`http://localhost:3000`) and use the Antigravity Browser Subagent (`/browser`) to open both the newly modified route and at least two existing routes (`/`, `/cash-flow`, `/transactions`, `/ious`).
    - Visually inspect screenshots to confirm zero console errors, zero 5xx network errors, zero layout clipping, and strict compliance with FinVault Botanical Minimalist tokens and max 3 component groups per view.
-3. **Layer 3 — Live Mobile Regression, Visual & Crash QA (Required whenever `apps/mobile`, `packages/ui`, or `packages/sync-engine` changed):**
-   - Run `adb devices` to check if `emulator-5554` (or a connected Android device) is active (or boot with `pnpm --filter @finvault/mobile qa:emulator-start`).
-   - If active, ALWAYS execute mobile QA tools sequentially (never in parallel) to prevent `UiAutomationService` collisions:
+3. **Layer 3 — Live Mobile Regression, Visual & Crash QA (Required whenever `apps/mobile`, `packages/ui`, `packages/sync-engine`, or `packages/db-types` changed):**
+   - Run `pnpm --filter @finvault/mobile qa:sync-apk` first to build (if source changed), download, boot `emulator-5554`, and install the latest preview APK automatically. Never ask the user to manually run `eas build`, download `.apk` files, or run `adb install` unless `eas-cli` explicitly reports an expired Expo login session.
+   - Then ALWAYS execute mobile QA tools sequentially (never in parallel) to prevent `UiAutomationService` collisions:
      a) Kill any lingering UIAutomator processes (`adb shell am force-stop dev.mobile.maestro` and `adb shell am force-stop dev.mobile.maestro.test`, or `pnpm --filter @finvault/mobile qa:reset-uiautomator`) and clear logs (`adb logcat -c`).
      b) Run `pnpm --filter @finvault/mobile test:maestro` alone until it finishes.
      c) Stop Maestro's Android driver (`adb shell am force-stop dev.mobile.maestro` and `adb shell am force-stop dev.mobile.maestro.test`) and wait 2 seconds so Android releases `UiAutomationService`.

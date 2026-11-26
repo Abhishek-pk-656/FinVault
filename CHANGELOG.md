@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
   - Added strictly dev-only biometric bypass (`canBypassBiometricAuth` guarded by `__DEV__ && EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC === 'true'`) with adversarial tests in `tests/mobile/biometric-bypass.test.ts`.
   - Instrumented mobile screens and navigation with semantic `testID` props, added baseline Maestro flows (`apps/mobile/.maestro/`), `scripts/ensure-emulator.mjs` (`qa:emulator-start`, `qa:emulator-stop`), and `scripts/check-logcat.mjs` (`qa:logcat-check`).
   - Fixed Android status bar top inset overlap in `TabNavigator.tsx` and `ErrorBoundary.tsx` via explicit `StatusBar.currentHeight` padding, hardened `check-logcat.mjs` against `uiautomator`/`UiAutomationService` harness noise, and enforced sequential Layer 3 QA (`qa:reset-uiautomator` + cooldown) in `verify-and-record`.
+  - Added autonomous EAS APK build/download/install pipeline (`apps/mobile/scripts/sync-emulator-apk.mjs`, `qa:sync-apk`) with content-hash caching in gitignored `apps/mobile/.cache/`, wired into `verify-and-record` Layer 3, plus Botanical `apps/web/src/app/icon.svg` and `public/favicon.ico` eliminating `/login` favicon 404 errors.
 
 ## [1.2.0] - 2026-11-18
 ### Changed

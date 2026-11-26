@@ -15,6 +15,7 @@
     "qa:reset-uiautomator": "adb shell am force-stop dev.mobile.maestro && adb shell am force-stop dev.mobile.maestro.test",
     "qa:emulator-start": "node scripts/ensure-emulator.mjs",
     "qa:emulator-stop": "adb emu kill",
+    "qa:sync-apk": "node scripts/sync-emulator-apk.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

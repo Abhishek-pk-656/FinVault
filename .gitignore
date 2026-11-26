@@ -12,6 +12,7 @@ out/
 
 # Mobile / Expo
 .expo/
+apps/mobile/.cache/
 apps/mobile/android/
 apps/mobile/ios/
 *.jks
