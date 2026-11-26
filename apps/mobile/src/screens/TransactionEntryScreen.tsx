@@ -144,15 +144,16 @@ export const TransactionEntryScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView testID="transaction-entry-screen" style={styles.container} contentContainerStyle={styles.content}>
       {/* Visual Group 1: Transaction Header & Live Balance Badge Card */}
       <Card variant="surface">
-        <Text style={styles.headerTitle}>TRANSACTION ENTRY</Text>
+        <Text testID="transaction-entry-heading" style={styles.headerTitle}>TRANSACTION ENTRY</Text>
 
         <View style={styles.fieldRow}>
           <View style={styles.dateCol}>
             <Text style={styles.fieldLabel}>DATE</Text>
             <TextInput
+              testID="transaction-date-input"
               style={styles.textInput}
               value={date}
               onChangeText={setDate}
@@ -163,6 +164,7 @@ export const TransactionEntryScreen: React.FC = () => {
           <View style={styles.descCol}>
             <Text style={styles.fieldLabel}>DESCRIPTION</Text>
             <TextInput
+              testID="transaction-description-input"
               style={styles.textInput}
               value={description}
               onChangeText={setDescription}
@@ -174,11 +176,12 @@ export const TransactionEntryScreen: React.FC = () => {
 
         <View style={styles.badgeRow}>
           <BalanceBadge
+            testID="balance-badge"
             differenceMinor={differenceMinor}
             hasEntries={debitsTotal > 0n || creditsTotal > 0n}
           />
           {differenceMinor !== 0n && (
-            <TouchableOpacity onPress={autoBalance} style={styles.autoBalanceBtn}>
+            <TouchableOpacity testID="transaction-auto-balance-btn" onPress={autoBalance} style={styles.autoBalanceBtn}>
               <Text style={styles.autoBalanceText}>⚡ Auto-Balance</Text>
             </TouchableOpacity>
           )}
@@ -198,6 +201,7 @@ export const TransactionEntryScreen: React.FC = () => {
               <Text style={styles.legNumber}>LEG #{idx + 1}</Text>
               <View style={styles.directionToggle}>
                 <TouchableOpacity
+                  testID={`transaction-leg-${idx}-debit`}
                   style={[
                     styles.directionBtn,
                     leg.direction === 'DEBIT' && styles.directionDebitActive,
@@ -214,6 +218,7 @@ export const TransactionEntryScreen: React.FC = () => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
+                  testID={`transaction-leg-${idx}-credit`}
                   style={[
                     styles.directionBtn,
                     leg.direction === 'CREDIT' && styles.directionCreditActive,
@@ -243,9 +248,10 @@ export const TransactionEntryScreen: React.FC = () => {
 
             {/* Account Quick Select Chips */}
             <View style={styles.accountChipsRow}>
-              {accounts.slice(0, 4).map(acc => (
+              {accounts.slice(0, 4).map((acc, accIdx) => (
                 <TouchableOpacity
                   key={acc.id}
+                  testID={`transaction-leg-${idx}-account-${accIdx}`}
                   style={[
                     styles.accountChip,
                     leg.accountId === acc.id && styles.accountChipActive,
@@ -267,6 +273,7 @@ export const TransactionEntryScreen: React.FC = () => {
 
             {/* Strict BigInt Minor Unit Amount Input */}
             <AmountInput
+              testID={`transaction-leg-${idx}-amount`}
               valueMinor={leg.amountMinor}
               onChangeMinor={val => updateLeg(idx, { amountMinor: val })}
               placeholder="0.00"
@@ -279,12 +286,14 @@ export const TransactionEntryScreen: React.FC = () => {
       <Card variant="surface">
         <View style={styles.actionRow}>
           <Button
+            testID="transaction-add-leg-btn"
             title="+ Add Leg"
             variant="secondary"
             onPress={addLeg}
             style={styles.addLegBtn}
           />
           <Button
+            testID="transaction-submit-btn"
             title={isSubmitting ? 'Posting...' : 'Post Transaction'}
             variant="primary"
             disabled={!isBalanced || isSubmitting || !description.trim()}

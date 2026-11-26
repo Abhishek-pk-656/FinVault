@@ -15,7 +15,7 @@ FinVault is an offline-first personal finance, IOU lending, bill, and wealth man
 2. **Contract-First Edits:** Before modifying `apps/web` or `apps/mobile`, read `packages/db-types` and `packages/ui` first to prevent type mismatches and redundant component creation[cite: 2].
 3. **Two-Speed Verification Loop:**
    - **Inner Loop (During file edits):** Run scoped checks (`pnpm --filter <workspace> typecheck` and `pnpm --filter <workspace> test`) to validate changes in a single turn.
-   - **Outer Loop (Before task completion):** Execute the `verify-and-record` skill to run the full 5-tier monorepo suite (`pnpm turbo typecheck && pnpm turbo test`), update `TASKS.md` and `CHANGELOG.md`, and automatically commit and push the verified changes to GitHub.
+   - **Outer Loop (Before task completion):** Execute the 4-layer `verify-and-record` skill: (1) Monorepo `pnpm turbo typecheck && pnpm turbo test` across all 5 tiers, (2) Live Web QA via Playwright (`pnpm --filter @finvault/web test:e2e`) and the Browser Subagent, (3) Live Mobile QA via Maestro (`pnpm --filter @finvault/mobile test:maestro`), `mobile-mcp`, and `qa:logcat-check` when an emulator is connected, and (4) update `TASKS.md`/`CHANGELOG.md` and push verified changes to GitHub.
 
 ## 3. Non-Negotiable Quality Invariants
 

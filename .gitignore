@@ -25,6 +25,12 @@ apps/mobile/ios/
 .env
 .env.*
 !.env.example
+apps/web/.env.test.local
+
+# Playwright
+apps/web/playwright/.auth/
+apps/web/playwright-report/
+apps/web/test-results/
 
 # Logs
 npm-debug.log*

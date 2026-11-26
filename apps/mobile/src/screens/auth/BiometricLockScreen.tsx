@@ -33,10 +33,10 @@ export const BiometricLockScreen: React.FC<BiometricLockScreenProps> = ({
   };
 
   return (
-    <View style={styles.container}>
+    <View testID="biometric-lock-screen" style={styles.container}>
       <Card variant="surface" style={styles.lockCard}>
         <Text style={styles.shieldIcon}>🛡️</Text>
-        <Text style={styles.title}>FINVAULT</Text>
+        <Text testID="biometric-lock-heading" style={styles.title}>FINVAULT</Text>
         <Text style={styles.subtitle}>
           Botanical Minimalist Personal Finance & Wealth Ledger
         </Text>
@@ -48,6 +48,7 @@ export const BiometricLockScreen: React.FC<BiometricLockScreenProps> = ({
         )}
 
         <Button
+          testID="biometric-unlock-btn"
           title={isAuthenticating ? 'Verifying...' : 'Unlock FinVault'}
           variant="primary"
           disabled={isAuthenticating}

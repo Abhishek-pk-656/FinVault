@@ -9,7 +9,11 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "eslint .",
-    "test": "node --test ../../tests/mobile/mobile.test.ts",
+    "test": "node --test ../../tests/mobile/mobile.test.ts ../../tests/mobile/biometric-bypass.test.ts",
+    "test:maestro": "maestro test .maestro/",
+    "qa:logcat-check": "node scripts/check-logcat.mjs",
+    "qa:emulator-start": "node scripts/ensure-emulator.mjs",
+    "qa:emulator-stop": "adb emu kill",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

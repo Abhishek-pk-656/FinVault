@@ -109,3 +109,9 @@
   - [x] Configure IPv4 network stack and Gradle properties (`apps/mobile/plugins/with-ipv4-gradle.js`, `eas.json` `GRADLE_OPTS`) resolving Linux runner IPv6 `downloadSQLite` network unreachable error.
   - [x] Build standalone preview Android APK via Expo Application Services (EAS Build) (`513a600a-31b0-4bd1-b61b-3de1985c097d` -> [9-EkUzMywTE-lQPjU7u_G7UZ6adWSt3kxQWXInta69I.apk](https://expo.dev/artifacts/eas/9-EkUzMywTE-lQPjU7u_G7UZ6adWSt3kxQWXInta69I.apk)).
   - [x] Verify live standalone APK on Android Emulator (`emulator-5554`): verified active process PID, Botanical navigation shell, and offline SQLite initialization.
+- [x] **M7.7: 4-Layer Automated E2E Regression & Governance Pipeline**
+  - [x] Fix `apps/mobile/tsconfig.json` `TS5096` by setting `"noEmit": true` alongside `allowImportingTsExtensions`.
+  - [x] Add Web Playwright regression harness (`apps/web/playwright.config.ts`, `e2e/auth.setup.ts`, `e2e/fixtures.ts`, `e2e/smoke.spec.ts`) and `web-e2e` CI job in `.github/workflows/ci.yml`.
+  - [x] Add strictly dev-only mobile biometric bypass (`apps/mobile/src/lib/auth/biometric-bypass.ts`) with adversarial test suite (`tests/mobile/biometric-bypass.test.ts`).
+  - [x] Instrument `apps/mobile` navigation/screens with semantic `testID`s, add Maestro flows (`apps/mobile/.maestro/`), `scripts/ensure-emulator.mjs`, and `scripts/check-logcat.mjs`.
+  - [x] Upgrade `scaffold-feature`, 4-layer `verify-and-record`, `AGENTS.md`, `docs/06-TESTING-AND-QA.md`, and `docs/11-ENV-AND-MCP.md`.

@@ -1,6 +1,12 @@
 import * as LocalAuthentication from 'expo-local-authentication';
+import { canBypassBiometricAuth } from './biometric-bypass';
 
 export async function authenticateWithBiometrics(): Promise<{ success: boolean; error?: string }> {
+  // Strictly dev/emulator-only bypass; dead-code eliminated in release builds where __DEV__ is false
+  if (__DEV__ && canBypassBiometricAuth(__DEV__, process.env.EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC)) {
+    return { success: true };
+  }
+
   try {
     const hasHardware = await LocalAuthentication.hasHardwareAsync();
     if (!hasHardware) {

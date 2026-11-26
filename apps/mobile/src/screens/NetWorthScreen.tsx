@@ -17,6 +17,7 @@ export const NetWorthScreen: React.FC = () => {
 
   return (
     <ScrollView
+      testID="net-worth-screen"
       style={styles.container}
       contentContainerStyle={styles.content}
       refreshControl={
@@ -29,8 +30,8 @@ export const NetWorthScreen: React.FC = () => {
     >
       {/* Visual Group 1: Net Worth Hero Card */}
       <Card variant="surface">
-        <Text style={styles.heroEyebrow}>CONSOLIDATED NET WORTH</Text>
-        <Text style={styles.heroValue}>{formatCurrency(netWorthMinor, '₹')}</Text>
+        <Text testID="net-worth-heading" style={styles.heroEyebrow}>CONSOLIDATED NET WORTH</Text>
+        <Text testID="net-worth-value" style={styles.heroValue}>{formatCurrency(netWorthMinor, '₹')}</Text>
 
         <View style={styles.pillsRow}>
           <StatPill
@@ -65,7 +66,7 @@ export const NetWorthScreen: React.FC = () => {
       {/* Visual Group 2: Assets Breakdown Card */}
       <Card variant="surface">
         <View style={styles.cardHeader}>
-          <Text style={styles.sectionTitle}>ASSETS</Text>
+          <Text testID="net-worth-assets-heading" style={styles.sectionTitle}>ASSETS</Text>
           <Text style={styles.sectionTotal}>{formatCurrency(totalAssets, '₹')}</Text>
         </View>
 
@@ -89,7 +90,7 @@ export const NetWorthScreen: React.FC = () => {
       {/* Visual Group 3: Liabilities Breakdown Card */}
       <Card variant="surface">
         <View style={styles.cardHeader}>
-          <Text style={styles.sectionTitle}>LIABILITIES</Text>
+          <Text testID="net-worth-liabilities-heading" style={styles.sectionTitle}>LIABILITIES</Text>
           <Text style={styles.sectionTotalAlert}>{formatCurrency(totalLiabilities, '₹')}</Text>
         </View>
 

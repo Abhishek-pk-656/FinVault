@@ -1,0 +1,20 @@
+appId: com.finvault.app
+---
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: "net-worth-heading"
+    timeout: 15000
+- tapOn:
+    id: "tab-iou-tracker"
+- assertVisible:
+    id: "iou-tracker-heading"
+- assertVisible:
+    id: "iou-active-debts-heading"
+- assertVisible:
+    id: "iou-settled-archive-heading"
+- assertNotVisible:
+    text: ".*has stopped.*"
+- assertNotVisible:
+    text: ".*isn't responding.*"

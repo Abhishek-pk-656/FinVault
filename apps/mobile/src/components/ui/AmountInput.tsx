@@ -9,6 +9,7 @@ interface AmountInputProps {
   currencySymbol?: string;
   placeholder?: string;
   editable?: boolean;
+  testID?: string;
 }
 
 export const AmountInput: React.FC<AmountInputProps> = ({
@@ -17,6 +18,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
   currencySymbol = '₹',
   placeholder = '0.00',
   editable = true,
+  testID,
 }) => {
   const [text, setText] = useState(() => (valueMinor === 0n ? '' : formatMinorToDecimal(valueMinor)));
 
@@ -40,6 +42,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
     <View style={styles.container}>
       <Text style={styles.symbol}>{currencySymbol}</Text>
       <TextInput
+        testID={testID}
         style={styles.input}
         value={text}
         onChangeText={handleChangeText}

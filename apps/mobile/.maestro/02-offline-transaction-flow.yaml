@@ -1,0 +1,51 @@
+appId: com.finvault.app
+---
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: "net-worth-heading"
+    timeout: 15000
+- tapOn:
+    id: "tab-transaction-entry"
+- assertVisible:
+    id: "transaction-entry-heading"
+- tapOn:
+    id: "transaction-description-input"
+- inputText: "Maestro E2E Coffee"
+- hideKeyboard
+- tapOn:
+    id: "transaction-leg-0-account-2"
+- tapOn:
+    id: "transaction-leg-0-amount"
+- inputText: "125.50"
+- hideKeyboard
+- tapOn:
+    id: "transaction-leg-1-account-0"
+- tapOn:
+    id: "transaction-leg-1-amount"
+- inputText: "125.50"
+- hideKeyboard
+- assertVisible:
+    id: "balance-badge-text"
+    text: "✓ Balanced"
+- scrollUntilVisible:
+    element:
+      id: "transaction-submit-btn"
+    direction: DOWN
+- tapOn:
+    id: "transaction-submit-btn"
+- extendedWaitUntil:
+    visible:
+      text: "Success"
+    timeout: 5000
+- tapOn:
+    text: "OK"
+- assertVisible:
+    id: "transaction-entry-heading"
+- tapOn:
+    id: "tab-net-worth"
+- assertVisible:
+    id: "net-worth-heading"
+- assertVisible:
+    id: "net-worth-value"

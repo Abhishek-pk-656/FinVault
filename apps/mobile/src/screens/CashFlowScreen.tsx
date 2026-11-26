@@ -35,6 +35,7 @@ export const CashFlowScreen: React.FC = () => {
 
   return (
     <ScrollView
+      testID="cash-flow-screen"
       style={styles.container}
       contentContainerStyle={styles.content}
       refreshControl={
@@ -47,8 +48,9 @@ export const CashFlowScreen: React.FC = () => {
     >
       {/* Visual Group 1: Monthly Trajectory & Burn Rate Hero Card */}
       <Card variant="surface">
-        <Text style={styles.heroEyebrow}>MONTHLY TRAJECTORY</Text>
+        <Text testID="cash-flow-heading" style={styles.heroEyebrow}>MONTHLY TRAJECTORY</Text>
         <Text
+          testID="cash-flow-value"
           style={[
             styles.heroValue,
             netTrajectory >= 0n ? styles.positiveText : styles.alertText,
@@ -74,7 +76,7 @@ export const CashFlowScreen: React.FC = () => {
       {/* Visual Group 2: Inflow Streams Card */}
       <Card variant="surface">
         <View style={styles.cardHeader}>
-          <Text style={styles.sectionTitle}>INFLOW STREAMS</Text>
+          <Text testID="cash-flow-inflows-heading" style={styles.sectionTitle}>INFLOW STREAMS</Text>
           <Text style={styles.sectionTotalPositive}>{formatCurrency(totalInflows, '₹')}</Text>
         </View>
 
@@ -98,7 +100,7 @@ export const CashFlowScreen: React.FC = () => {
       {/* Visual Group 3: Outflow Streams Card */}
       <Card variant="surface">
         <View style={styles.cardHeader}>
-          <Text style={styles.sectionTitle}>OUTFLOW STREAMS</Text>
+          <Text testID="cash-flow-outflows-heading" style={styles.sectionTitle}>OUTFLOW STREAMS</Text>
           <Text style={styles.sectionTotalAlert}>{formatCurrency(totalOutflows, '₹')}</Text>
         </View>
 

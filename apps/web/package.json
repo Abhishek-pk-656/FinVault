@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@finvault/db-types": "workspace:*",
@@ -23,6 +24,7 @@
     "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",

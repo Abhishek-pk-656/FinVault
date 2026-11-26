@@ -42,12 +42,27 @@
   - Web Server Actions & Next.js middleware route matching.
   - Mobile SQLite parameter normalization, biometric fallback, and AST verification confirming $\le 3$ visual component groups across all 5 web views and 5 mobile screens.
 
-### Mobile Specialized Harnesses & Parity (64 Tests)
-* `tests/mobile/mobile.test.ts` (10 tests), `tests/mobile/adversarial-stress.test.ts` (20 tests), `tests/mobile/adversarial.stress.ts` (11 tests), `packages/sync-engine/tests/sync-engine.test.ts` (23 tests).
+### Mobile Specialized Harnesses & Parity (64+ Tests)
+* `tests/mobile/mobile.test.ts` (10 tests), `tests/mobile/biometric-bypass.test.ts` (3 adversarial security tests guarding `__DEV__` + `EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC`), `tests/mobile/adversarial-stress.test.ts` (20 tests), `tests/mobile/adversarial.stress.ts` (11 tests), `packages/sync-engine/tests/sync-engine.test.ts` (23 tests).
 
 ---
 
-## 3. Verification Execution Commands
+## 3. Live End-to-End & Visual QA Tooling (4-Layer `verify-and-record` Gate)
+
+* **Layer 1 — Static, Math & Adversarial Gate:** `pnpm turbo typecheck && pnpm turbo test` plus the 5-tier master/adversarial runners.
+* **Layer 2 — Live Web Regression & Visual QA (`apps/web`):**
+  - **Playwright (`apps/web/playwright.config.ts`, `apps/web/e2e/`):** Runs headless Chromium against `http://localhost:3000`, enforces zero uncaught `pageerror`, `console.error`, or 5xx responses via `e2e/fixtures.ts`, authenticates safely using `e2e/auth.setup.ts` (`apps/web/.env.test.local`, saving `storageState` to `playwright/.auth/user.json`), and validates `/login`, `/`, `/cash-flow`, `/transactions` (`BalanceBadge` validation), and `/ious`.
+  - **Antigravity Browser Subagent (`/browser`):** Opens modified and core routes on `http://localhost:3000` for visual screenshot inspection (layout clipping, Botanical Minimalist tokens, and $\le 3$ visual groups per view).
+* **Layer 3 — Live Mobile Regression, Visual & Crash QA (`apps/mobile`):**
+  - **Emulator Lifecycle Scripts:** `pnpm --filter @finvault/mobile qa:emulator-start` (`scripts/ensure-emulator.mjs`) and `qa:emulator-stop` (`adb emu kill`).
+  - **Maestro Flows (`apps/mobile/.maestro/`):** `01-launch-and-navigation.yaml`, `02-offline-transaction-flow.yaml`, and `03-iou-screen-smoke.yaml` using semantic `testID` attributes across tabs, headings, `AmountInput`, `BalanceBadge`, and settlement modals.
+  - **`mobile-mcp` Visual Inspection:** Captures live screen hierarchy and device screenshots on `emulator-5554`.
+  - **ADB Logcat Crash Gate (`scripts/check-logcat.mjs`):** Fails non-zero on any `AndroidRuntime`, `ReactNativeJS`, `Expo`, or `com.finvault.app` fatal crash or unhandled JS exception.
+* **Layer 4 — Record & Automated Git Gate:** Updates `TASKS.md` and `CHANGELOG.md`, audits `git status` to guarantee zero `.env`, `.env.test.local`, `playwright/.auth/`, or `*.sqlite`/`*.db` files are staged, commits, and pushes.
+
+---
+
+## 4. Verification Execution Commands
 
 ```bash
 # Full monorepo typecheck & build gate
@@ -57,10 +72,18 @@ pnpm turbo build
 # Workspace package test execution
 pnpm turbo test
 
+# Live Web Playwright E2E regression gate
+pnpm --filter @finvault/web test:e2e
+
+# Live Mobile Maestro + Logcat QA gate (with emulator running)
+pnpm --filter @finvault/mobile qa:emulator-start
+pnpm --filter @finvault/mobile test:maestro
+pnpm --filter @finvault/mobile qa:logcat-check
+
 # Master 5-tier 196-test verification runner
 node --experimental-strip-types tests/e2e/runner.ts
 node --experimental-strip-types tests/e2e/tier5-backend-adversarial.ts
 node --experimental-strip-types tests/e2e/tier5-frontend-adversarial.ts
-node --test tests/mobile/mobile.test.ts
+node --test tests/mobile/mobile.test.ts tests/mobile/biometric-bypass.test.ts
 node --test tests/mobile/adversarial-stress.test.ts
 ```

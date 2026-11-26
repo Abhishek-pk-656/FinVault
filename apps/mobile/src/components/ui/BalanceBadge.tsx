@@ -6,17 +6,19 @@ import { formatMinorToDecimal } from '../../lib/money/format';
 interface BalanceBadgeProps {
   differenceMinor: bigint;
   hasEntries?: boolean;
+  testID?: string;
 }
 
 export const BalanceBadge: React.FC<BalanceBadgeProps> = ({
   differenceMinor,
   hasEntries = true,
+  testID = 'balance-badge',
 }) => {
   const isBalanced = differenceMinor === 0n && hasEntries;
 
   return (
-    <View style={[styles.badge, isBalanced ? styles.balanced : styles.imbalanced]}>
-      <Text style={[styles.badgeText, isBalanced ? styles.balancedText : styles.imbalancedText]}>
+    <View testID={testID} style={[styles.badge, isBalanced ? styles.balanced : styles.imbalanced]}>
+      <Text testID={`${testID}-text`} style={[styles.badgeText, isBalanced ? styles.balancedText : styles.imbalancedText]}>
         {isBalanced
           ? '✓ Balanced'
           : `Difference: ₹${formatMinorToDecimal(differenceMinor > 0n ? differenceMinor : -differenceMinor)}`}

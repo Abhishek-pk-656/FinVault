@@ -21,11 +21,11 @@ interface TabConfig {
   icon: string;
 }
 
-const TABS: TabConfig[] = [
-  { key: 'NetWorth', label: 'Net Worth', icon: '🛡️' },
-  { key: 'CashFlow', label: 'Cash Flow', icon: '📈' },
-  { key: 'TransactionEntry', label: 'Entry', icon: '➕' },
-  { key: 'IOUTracker', label: 'IOUs', icon: '🤝' },
+const TABS: (TabConfig & { testId: string })[] = [
+  { key: 'NetWorth', label: 'Net Worth', icon: '🛡️', testId: 'tab-net-worth' },
+  { key: 'CashFlow', label: 'Cash Flow', icon: '📈', testId: 'tab-cash-flow' },
+  { key: 'TransactionEntry', label: 'Entry', icon: '➕', testId: 'tab-transaction-entry' },
+  { key: 'IOUTracker', label: 'IOUs', icon: '🤝', testId: 'tab-iou-tracker' },
 ];
 
 export const TabNavigator: React.FC = () => {
@@ -61,12 +61,13 @@ export const TabNavigator: React.FC = () => {
       </Animated.View>
 
       {/* Venzer Botanical Bottom Tab Bar */}
-      <View style={styles.tabBar}>
+      <View testID="bottom-tab-bar" style={styles.tabBar}>
         {TABS.map(tab => {
           const isActive = tab.key === activeTab;
           return (
             <TouchableOpacity
               key={tab.key}
+              testID={tab.testId}
               activeOpacity={0.7}
               onPress={() => handleTabPress(tab.key)}
               style={styles.tabItem}

@@ -15,6 +15,17 @@
     "typecheck": {
       "dependsOn": ["^build"]
     },
+    "e2e": {
+      "cache": false,
+      "dependsOn": ["^build"],
+      "passThroughEnv": [
+        "E2E_TEST_EMAIL",
+        "E2E_TEST_PASSWORD",
+        "NEXT_PUBLIC_SUPABASE_URL",
+        "NEXT_PUBLIC_SUPABASE_ANON_KEY",
+        "CI"
+      ]
+    },
     "dev": {
       "cache": false,
       "persistent": true

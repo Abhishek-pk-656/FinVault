@@ -3,6 +3,7 @@ declare global {
     interface ProcessEnv {
       readonly EXPO_PUBLIC_SUPABASE_URL?: string;
       readonly EXPO_PUBLIC_SUPABASE_ANON_KEY?: string;
+      readonly EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC?: string;
       readonly [key: string]: string | undefined;
     }
   }

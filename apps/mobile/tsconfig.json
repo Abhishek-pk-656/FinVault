@@ -2,6 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-native",
+    "noEmit": true,
     "allowImportingTsExtensions": true
   },
   "include": ["**/*.ts", "**/*.tsx", "env.d.ts"]

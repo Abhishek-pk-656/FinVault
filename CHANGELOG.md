@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-11-26
+### Added & Changed
+- **4-Layer Automated QA & Governance Upgrade**:
+  - Upgraded `.agents/skills/scaffold-feature/SKILL.md` and `.agents/skills/verify-and-record/SKILL.md` to enforce 4-layer verification (Static/Unit/Adversarial + Web Playwright & Browser Subagent + Mobile Maestro/`mobile-mcp`/Logcat + Git Gate).
+  - Updated `AGENTS.md`, `docs/06-TESTING-AND-QA.md`, and `docs/11-ENV-AND-MCP.md` documenting Playwright, Maestro, `mobile-mcp`, and Browser Subagent visual QA protocols.
+  - Added `web-e2e` Playwright job to `.github/workflows/ci.yml` and uncached `"e2e"` task to `turbo.json`.
+- **Web Playwright E2E Harness (`apps/web`)**:
+  - Added `playwright.config.ts`, `e2e/fixtures.ts` (auto-failing on `pageerror`, `console.error`, and `>= 500` responses), `e2e/auth.setup.ts`, and `e2e/smoke.spec.ts` covering `/login`, `/`, `/cash-flow`, `/transactions` (`BalanceBadge` validation), and `/ious`.
+  - Updated `.gitignore` to exclude `apps/web/.env.test.local`, `apps/web/playwright/.auth/`, `apps/web/playwright-report/`, and `apps/web/test-results/`.
+- **Mobile QA, Biometric Guard & TypeScript Fix (`apps/mobile`)**:
+  - Added `"noEmit": true` to `apps/mobile/tsconfig.json` resolving `TS5096`.
+  - Added strictly dev-only biometric bypass (`canBypassBiometricAuth` guarded by `__DEV__ && EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC === 'true'`) with adversarial tests in `tests/mobile/biometric-bypass.test.ts`.
+  - Instrumented mobile screens and navigation with semantic `testID` props, added baseline Maestro flows (`apps/mobile/.maestro/`), `scripts/ensure-emulator.mjs` (`qa:emulator-start`, `qa:emulator-stop`), and `scripts/check-logcat.mjs` (`qa:logcat-check`).
+
 ## [1.2.0] - 2026-11-18
 ### Changed
 - **Agent Instruction Suite & Token Efficiency Realignment**: Streamlined root operational router [`AGENTS.md`](file:///d:/programming/New_project/AGENTS.md) and `.agents/rules/` (`00-living-plan-protocol.md`, `01-financial-ledger-safety.md`, `02-frontend-mobile-standards.md`, `03-sync-and-rls-parity.md`) to surgical, contract-first progressive disclosure pointers, optimizing token efficiency.

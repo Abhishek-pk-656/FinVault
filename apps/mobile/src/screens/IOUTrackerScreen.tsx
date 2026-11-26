@@ -69,6 +69,7 @@ export const IOUTrackerScreen: React.FC = () => {
 
   return (
     <ScrollView
+      testID="iou-tracker-screen"
       style={styles.container}
       contentContainerStyle={styles.content}
       refreshControl={
@@ -81,7 +82,7 @@ export const IOUTrackerScreen: React.FC = () => {
     >
       {/* Visual Group 1: Net Peer Position Hero Card */}
       <Card variant="surface">
-        <Text style={styles.heroEyebrow}>NET PEER POSITION</Text>
+        <Text testID="iou-tracker-heading" style={styles.heroEyebrow}>NET PEER POSITION</Text>
         <Text
           style={[
             styles.heroValue,
@@ -108,15 +109,15 @@ export const IOUTrackerScreen: React.FC = () => {
       {/* Visual Group 2: Active Bilateral Debts Card */}
       <Card variant="surface">
         <View style={styles.cardHeader}>
-          <Text style={styles.sectionTitle}>ACTIVE DEBTS ({activeDebts.length})</Text>
+          <Text testID="iou-active-debts-heading" style={styles.sectionTitle}>ACTIVE DEBTS ({activeDebts.length})</Text>
           <Text style={styles.sectionSubtitle}>BILATERAL IOUS</Text>
         </View>
 
         {activeDebts.length === 0 ? (
-          <Text style={styles.emptyText}>No pending debts or receivables</Text>
+          <Text testID="iou-active-empty" style={styles.emptyText}>No pending debts or receivables</Text>
         ) : (
           activeDebts.map(iou => (
-            <View key={iou.id} style={styles.itemRow}>
+            <View key={iou.id} testID={`iou-active-row-${iou.id}`} style={styles.itemRow}>
               <View style={styles.itemMain}>
                 <Text style={styles.counterpartyName} numberOfLines={1}>
                   {iou.counterparty_name}
@@ -141,6 +142,7 @@ export const IOUTrackerScreen: React.FC = () => {
                   {formatCurrency(iou.remaining_balance_minor, '₹')}
                 </Text>
                 <TouchableOpacity
+                  testID={`iou-settle-btn-${iou.id}`}
                   style={styles.settleActionBtn}
                   onPress={() => openSettlement(iou)}
                 >
@@ -155,12 +157,12 @@ export const IOUTrackerScreen: React.FC = () => {
       {/* Visual Group 3: Settled Debts Archive Card */}
       <Card variant="surface">
         <View style={styles.cardHeader}>
-          <Text style={styles.sectionTitle}>SETTLED ARCHIVE ({settledDebts.length})</Text>
+          <Text testID="iou-settled-archive-heading" style={styles.sectionTitle}>SETTLED ARCHIVE ({settledDebts.length})</Text>
           <Text style={styles.sectionSubtitle}>CLEARED</Text>
         </View>
 
         {settledDebts.length === 0 ? (
-          <Text style={styles.emptyText}>No settled debts yet</Text>
+          <Text testID="iou-settled-empty" style={styles.emptyText}>No settled debts yet</Text>
         ) : (
           settledDebts.slice(0, 5).map(iou => (
             <View key={iou.id} style={styles.itemRow}>
@@ -194,6 +196,7 @@ export const IOUTrackerScreen: React.FC = () => {
 
             <Text style={styles.modalLabel}>SETTLEMENT AMOUNT</Text>
             <AmountInput
+              testID="iou-settlement-amount-input"
               valueMinor={settleAmount}
               onChangeMinor={setSettleAmount}
               placeholder="0.00"
@@ -233,12 +236,14 @@ export const IOUTrackerScreen: React.FC = () => {
 
             <View style={styles.modalActionRow}>
               <Button
+                testID="iou-settlement-cancel-btn"
                 title="Cancel"
                 variant="outline"
                 onPress={() => setActiveModalIOU(null)}
                 style={styles.modalCancelBtn}
               />
               <Button
+                testID="iou-settlement-confirm-btn"
                 title={isSettling ? 'Settling...' : 'Confirm'}
                 variant="primary"
                 disabled={isSettling || settleAmount <= 0n}

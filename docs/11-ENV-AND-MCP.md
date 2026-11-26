@@ -35,3 +35,12 @@ The workspace is linked to both Supabase Cloud and Vercel environments. The agen
 - **Environment Inspection**: `npx vercel env ls` (inspects and verifies configured environment variables on Production and Preview).
 - **Deployment Logs**: `npx vercel logs <deployment-or-domain>` (fetches runtime logs and diagnostic stack traces for rapid triage).
 - **Production Deployment**: Automated upon verified push to `main` via Vercel GitHub integration.
+
+## 3. Live E2E Auth, Visual QA & Mobile MCP Tooling
+
+- **Web Playwright E2E (`apps/web/.env.test.local`):** Holds `E2E_TEST_EMAIL` and `E2E_TEST_PASSWORD` (gitignored; documented in `apps/web/.env.example`) for `apps/web/e2e/auth.setup.ts`, saving authenticated `storageState` to `apps/web/playwright/.auth/user.json` (also gitignored).
+- **Antigravity Browser Subagent (`/browser`):** Used in `verify-and-record` Layer 2 to visually inspect rendered Next.js routes on `http://localhost:3000` for layout clipping, Botanical Minimalist compliance, console errors, and 5xx network errors.
+- **Mobile E2E & Biometric Test Guard (`apps/mobile`):**
+  - Dev-only biometric bypass requires BOTH `__DEV__ === true` AND `EXPO_PUBLIC_E2E_BYPASS_BIOMETRIC === 'true'` (never enabled in `apps/mobile/eas.json` preview/production profiles).
+  - Emulator lifecycle (`qa:emulator-start`, `qa:emulator-stop`), Maestro suites (`pnpm --filter @finvault/mobile test:maestro`), and ADB crash checks (`qa:logcat-check`).
+- **`mobile-mcp` Server:** Connected MCP server providing device screen inspection (`mobile_list_elements_on_screen`, `mobile_take_screenshot`, `mobile_get_device_logs`) for Layer 3 live mobile QA on `emulator-5554`.
