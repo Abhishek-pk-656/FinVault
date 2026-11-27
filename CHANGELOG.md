@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2026-11-27
+### Changed
+- **V1 Feature Map & Design Architecture Lock (Living Plan Update)**:
+  - Updated [`docs/01-PRD-AND-ROADMAP.md`](file:///d:/programming/New_project/docs/01-PRD-AND-ROADMAP.md) with the finalized Phase 1 Daily-Driver App Map (4 tabs + center `+ Quick Add` and global top utility bar) and locked feature specifications: Store-Tagged Virtual Jars with priority pausing & Atomic Auto Top-Up, Credit Card `Card Bill Reserve` tagging, 5-mode Quick Add with inline `+ Create`, unified `Contacts` (`People`, `Businesses`, `Trips / Group Buckets`), structured EMI tracker, AES-256-GCM `Account & Card Info Vault`, and switchable currency/number formatting.
+  - Updated [`docs/03-DESIGN-SYSTEM.md`](file:///d:/programming/New_project/docs/03-DESIGN-SYSTEM.md) with Muted Amber (`#D99B26`) semantic warnings, Dual-Balance Account Row hierarchy, Doughnut & Paired Bar chart standards, Horizontal Stacked Distribution Bar, Global Privacy Mode, and the Google Stitch $\rightarrow$ FigCraft (`docs/designs/finvault-v1.figcraft`) $\rightarrow$ Antigravity MCP pipeline.
+  - Added `Planned V1 Schema Expansion (Pending Design Finalization)` in [`docs/04-DATABASE-SCHEMA.md`](file:///d:/programming/New_project/docs/04-DATABASE-SCHEMA.md) covering `sinking_fund_allocations`, `sinking_fund_topup_events`, `card_bill_reserves`, `contacts`, `trips`, `trip_participants`, `trip_splits`, `emis`, `recurring_bills`, `vault_secrets`, and `user_settings`.
+  - Recorded `ADR-012` through `ADR-015` in [`docs/10-ADR.md`](file:///d:/programming/New_project/docs/10-ADR.md) and added **Milestone 8** and **Milestone 9** to [`TASKS.md`](file:///d:/programming/New_project/TASKS.md).
+
 ## [1.3.0] - 2026-11-26
 ### Added & Changed
 - **4-Layer Automated QA & Governance Upgrade**:

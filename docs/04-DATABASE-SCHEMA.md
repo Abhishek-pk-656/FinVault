@@ -582,3 +582,50 @@ CREATE INDEX IF NOT EXISTS idx_sinking_funds_user ON sinking_funds(user_id);
 CREATE INDEX IF NOT EXISTS idx_sinking_funds_target_date ON sinking_funds(target_date);
 CREATE INDEX IF NOT EXISTS idx_sync_queue_status ON sync_queue(status, created_at);
 ```
+
+---
+
+## Planned V1 Schema Expansion (Pending Design Finalization)
+
+> [!NOTE]
+> The tables below define the planned V1 schema expansion supporting Store-Tagged Virtual Jars, Credit Card Bill Reserves, unified Contacts & Trips, structured EMIs/Bills, the client-side AES-256-GCM Vault, and User Settings. Do **not** apply migrations until Milestone 8 design finalization is complete and Milestone 9 begins. Every table preserves `BIGINT` minor units (SQLite `INTEGER`), `auth.uid() = user_id` RLS policies, optimistic `version` concurrency, soft deletes where applicable, and full SQLite parity in `packages/sync-engine`.
+
+### 1. Store-Tagged Virtual Jars & Auto Top-Up History
+* **`sinking_fund_allocations`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `jar_id UUID NOT NULL REFERENCES sinking_funds(id)`, `account_id UUID NOT NULL REFERENCES accounts(id)`, `allocated_minor BIGINT NOT NULL CHECK (allocated_minor >= 0)`, `auto_topped_up_minor BIGINT NOT NULL DEFAULT 0 CHECK (auto_topped_up_minor >= 0)`, `total_spent_minor BIGINT NOT NULL DEFAULT 0 CHECK (total_spent_minor >= 0)`, `priority_order INT NOT NULL DEFAULT 0`, `is_paused BOOLEAN NOT NULL DEFAULT FALSE`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+  * Supports drag-to-reorder priority pausing (`priority_order`, `is_paused` when tagged wallet `Free` balance `< 0`) and preserves the Jar ledger breakdown (`Saved = allocated_minor`, `Topped Up = auto_topped_up_minor`, `Total Spent = total_spent_minor`, `Remaining = allocated_minor + auto_topped_up_minor - total_spent_minor`).
+* **`sinking_fund_topup_events`** (Auto Top-Up History)
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `allocation_id UUID NOT NULL REFERENCES sinking_fund_allocations(id)`, `transaction_id UUID NOT NULL REFERENCES transactions(id)`, `source_account_id UUID NOT NULL REFERENCES accounts(id)`, `topup_minor BIGINT NOT NULL CHECK (topup_minor > 0)`, `created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`.
+
+### 2. Credit Card Bill Reserves
+* **`card_bill_reserves`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `card_account_id UUID NOT NULL REFERENCES accounts(id)`, `bank_account_id UUID NOT NULL REFERENCES accounts(id)`, `jar_id UUID REFERENCES sinking_funds(id)`, `transaction_id UUID NOT NULL REFERENCES transactions(id)`, `reserved_minor BIGINT NOT NULL CHECK (reserved_minor > 0)`, `status TEXT NOT NULL DEFAULT 'RESERVED' CHECK (status IN ('RESERVED', 'SETTLED', 'RELEASED'))`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+  * Tracks jar-funded credit card swipes reserved inside designated bank accounts until the card bill payment settles.
+
+### 3. Unified Contacts Directory (`People` & `Businesses`)
+* **`contacts`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `type TEXT NOT NULL CHECK (type IN ('person', 'business'))`, `name VARCHAR(120) NOT NULL`, `phone VARCHAR(40)`, `email VARCHAR(160)`, `notes TEXT`, `is_archived BOOLEAN NOT NULL DEFAULT FALSE`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+  * Future foreign key linkage from `iou_records`, `transactions` (merchant/counterparty), `emis`, and `recurring_bills`.
+
+### 4. Trips & Group Expense Buckets
+* **`trips`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `name VARCHAR(140) NOT NULL`, `currency CHAR(3) NOT NULL DEFAULT 'INR'`, `linked_jar_id UUID REFERENCES sinking_funds(id)`, `is_settled BOOLEAN NOT NULL DEFAULT FALSE`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+* **`trip_participants`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `trip_id UUID NOT NULL REFERENCES trips(id) ON DELETE CASCADE`, `contact_id UUID REFERENCES contacts(id)`, `display_name VARCHAR(120) NOT NULL`, `is_self BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+* **`trip_splits`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `trip_id UUID NOT NULL REFERENCES trips(id) ON DELETE CASCADE`, `transaction_id UUID REFERENCES transactions(id)`, `paid_by_participant_id UUID NOT NULL REFERENCES trip_participants(id)`, `description VARCHAR(255) NOT NULL`, `total_amount_minor BIGINT NOT NULL CHECK (total_amount_minor > 0)`, `split_shares JSONB NOT NULL` (participant ID $\rightarrow$ integer minor-unit share summing exactly to `total_amount_minor`), `split_date DATE NOT NULL`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+
+### 5. Structured EMIs & Recurring Bills
+* **`emis`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `name VARCHAR(140) NOT NULL`, `liability_account_id UUID REFERENCES accounts(id)`, `funding_account_id UUID REFERENCES accounts(id)`, `contact_id UUID REFERENCES contacts(id)`, `principal_minor BIGINT NOT NULL CHECK (principal_minor > 0)`, `remaining_principal_minor BIGINT NOT NULL CHECK (remaining_principal_minor >= 0)`, `emi_amount_minor BIGINT NOT NULL CHECK (emi_amount_minor > 0)`, `total_installments INT NOT NULL CHECK (total_installments > 0)`, `paid_installments INT NOT NULL DEFAULT 0 CHECK (paid_installments >= 0)`, `next_due_date DATE`, `currency CHAR(3) NOT NULL DEFAULT 'INR'`, `status TEXT NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'CLOSED', 'FORECLOSED'))`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+* **`recurring_bills`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `name VARCHAR(140) NOT NULL`, `funding_account_id UUID REFERENCES accounts(id)`, `expense_account_id UUID REFERENCES accounts(id)`, `jar_id UUID REFERENCES sinking_funds(id)`, `contact_id UUID REFERENCES contacts(id)`, `amount_minor BIGINT NOT NULL CHECK (amount_minor > 0)`, `cadence TEXT NOT NULL CHECK (cadence IN ('WEEKLY', 'MONTHLY', 'QUARTERLY', 'YEARLY'))`, `next_due_date DATE NOT NULL`, `currency CHAR(3) NOT NULL DEFAULT 'INR'`, `is_pinned_quick_repeat BOOLEAN NOT NULL DEFAULT TRUE`, `is_active BOOLEAN NOT NULL DEFAULT TRUE`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+
+### 6. Client-Side Encrypted Vault
+* **`vault_secrets`**
+  * Columns: `id UUID PK`, `user_id UUID NOT NULL`, `account_id UUID NOT NULL REFERENCES accounts(id) ON DELETE CASCADE`, `label VARCHAR(120) NOT NULL`, `ciphertext_b64 TEXT NOT NULL`, `iv_b64 TEXT NOT NULL`, `salt_b64 TEXT NOT NULL`, `kdf_iterations INT NOT NULL`, `algorithm TEXT NOT NULL DEFAULT 'AES-256-GCM'`, `is_deleted BOOLEAN NOT NULL DEFAULT FALSE`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.
+  * Stores strictly opaque AES-256-GCM ciphertext blobs and IV/salt metadata; encryption keys never leave the client device.
+
+### 7. User Settings & Formatting Preferences
+* **`user_settings`**
+  * Columns: `user_id UUID PK REFERENCES auth.users(id) ON DELETE CASCADE`, `currency_code CHAR(3) NOT NULL DEFAULT 'INR'`, `number_format VARCHAR(16) NOT NULL DEFAULT 'en-IN'`, `default_privacy_mode BOOLEAN NOT NULL DEFAULT FALSE`, `biometric_lock BOOLEAN NOT NULL DEFAULT TRUE`, `clipboard_clear_seconds INT NOT NULL DEFAULT 45 CHECK (clipboard_clear_seconds BETWEEN 10 AND 300)`, `created_at`, `updated_at`, `version BIGINT NOT NULL DEFAULT 1`.

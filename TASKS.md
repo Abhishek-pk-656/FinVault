@@ -121,3 +121,23 @@
   - [x] Implement Google OAuth PKCE (`finvault://auth/callback`, `WebBrowser.openAuthSessionAsync`, `exchangeCodeForSession`), Botanical `LoginScreen` (`mobile-google-login-btn`), and session/biometric gate (`AuthProvider`, `resolveAuthGateScreen`, `BiometricLockScreen`).
   - [x] Add visible sync status pill (`Synced` vs `Pending offline (N)`), Account & Sync modal (`Sync Now`, `Sign Out`, user email) in `TabNavigator.tsx`, and attach Supabase session JWT in `packages/sync-engine` (`executeDeltaSync`) + `SyncProvider`.
   - [x] Verify with `tests/mobile/auth-gate.test.ts` (18 mobile tests passing), updated Maestro flows (`3/3` passing against EAS preview APK on `emulator-5554`), `mobile-mcp` live inspection, `qa:logcat-check`, Playwright (`4/4`), and Browser Subagent.
+
+### Milestone 8: Visual Design & Feature Finalization (Stitch + FigCraft)
+- [ ] **M8.1: Batch 1 Core Screens**
+  - [ ] Explore and review core daily-driver screens in Google Stitch (`Home`, `Activity`, `+ Quick Add` 5-mode sheet, `Wallet` with dual-balance rows & Jars, `Liquidity Breakdown Sheet`).
+- [ ] **M8.2: Batch 2 Secondary Screens**
+  - [ ] Explore and review secondary screens in Google Stitch (`Contacts` People/Businesses/Trips, `EMI Tracker`, `Account & Card Info Vault`, `Settings` currency/privacy controls).
+- [ ] **M8.3: Feature Trim/Finalization & FigCraft Master File**
+  - [ ] Consolidate approved Stitch explorations into `docs/designs/finvault-v1.figcraft` as the master editable source of truth and lock final component inventory.
+- [ ] **M8.4: Final Design-System Doc Sync**
+  - [ ] Reconcile `docs/03-DESIGN-SYSTEM.md` and component specs with finalized FigCraft screen tokens prior to Milestone 9 implementation.
+
+### Milestone 9: V1 Schema & Cross-Platform Implementation
+- [ ] **M9.1: Dual-Schema Migration**
+  - [ ] Implement Supabase PostgreSQL migrations, RLS policies, and SQLite parity DDL + `packages/db-types` for `sinking_fund_allocations`, `sinking_fund_topup_events`, `card_bill_reserves`, `contacts`, `trips`, `trip_participants`, `trip_splits`, `emis`, `recurring_bills`, `vault_secrets`, and `user_settings`.
+- [ ] **M9.2: Shared UI Primitives**
+  - [ ] Build Botanical Minimalist primitives in `packages/ui` (Doughnut Chart, Paired Bar Chart, Horizontal Stacked Distribution Bar, Dual-Balance Account Row, Privacy Masking wrapper, Muted Amber `#D99B26` warning states, and multi-currency/Indian grouping formatters).
+- [ ] **M9.3: Core Daily Loop**
+  - [ ] Implement `Home`, `Activity`, Universal 5-Mode `+ Quick Add` (with inline `+ Create`), `Wallet` (Store-Tagged Virtual Jars with drag-to-reorder priority pausing, Atomic Auto Top-Up, Credit Card `Card Bill Reserve`), and `Settings` across `apps/web` and `apps/mobile`.
+- [ ] **M9.4: Contacts/Trips/EMIs/Vault**
+  - [ ] Implement unified `Contacts` (`People` chat-style ledger + WhatsApp summary share, `Businesses`, `Trips / Group Buckets` with simplified settlements), `EMI Tracker`, and AES-256-GCM `Account & Card Info Vault` (biometric reveal + 45s clipboard auto-clear), verified via 4-layer QA.

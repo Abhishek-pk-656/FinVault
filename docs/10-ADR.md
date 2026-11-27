@@ -48,3 +48,29 @@
   2. **Database & Edge Logic (Supabase Cloud):** PostgreSQL 16 schema, deferred constraint triggers, RLS policies, and Deno Edge Functions (`validate-transaction`, `sync-reconcile`) deployed via official Supabase CLI (`pnpm supabase:link`, `pnpm supabase:push`, `pnpm supabase:deploy-functions`).
   3. **Web Cockpit (Vercel):** Next.js 14+ deployed on Vercel (`apps/web/vercel.json`) with strict security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`), connecting seamlessly to Supabase via `@supabase/ssr` environment variables.
   4. **Mobile Client (Expo EAS Standalone APK):** Configured via `apps/mobile/eas.json` with `preview` profile generating direct Android `.apk` binaries for sideloading and internal testing, paired with `com.finvault.app` bundle package and biometric plugins (`expo-local-authentication`, `expo-sqlite`).
+
+## ADR-012: Store-Tagged Virtual Jars with Priority Pausing & Atomic Auto Top-Up
+* **Status:** Accepted
+* **Context:** Users want goal-based virtual Jars tied to real bank/cash accounts without creating dozens of real sub-accounts or breaking double-entry ledger integrity when an urgent expense exceeds a Jar's balance.
+* **Decision:** Model Jars as store-tagged allocations (`sinking_fund_allocations`) mapped to underlying `ASSET` accounts rather than separate bank transfers:
+  1. Each account exposes both its **Real Balance** and its Jar-adjusted **`Free` balance** (`Real - Active Jars - Card Bill Reserves`).
+  2. Users assign drag-to-reorder priority to Jars; if a wallet's `Free` balance falls below `0`, lower-priority Jars pause visually (gray slice) without mutating historical balances.
+  3. On Jar overspend, an atomic **Auto Top-Up** pulls the exact deficit from the tagged wallet's `Free` balance while retaining the Jar's full spend ledger (`Saved`, `Topped Up`, `Total Spent`, `Remaining`).
+
+## ADR-013: Credit Card Bill Reserve Mechanism for Jar-Funded Card Swipes
+* **Status:** Accepted
+* **Context:** Paying for a Jar-budgeted purchase with a credit card reduces the Jar's remaining allowance immediately, but actual cash does not leave the bank account until the credit card statement is paid—creating a risk of double-spending that cash.
+* **Decision:** Introduce `card_bill_reserves` linked to the spending transaction, credit card (`LIABILITY`), Jar, and designated bank wallet (`ASSET`). When a Jar-funded expense uses a credit card, the spent `BIGINT` minor amount is deducted from the Jar and earmarked as a `Card Bill Reserve` inside the bank wallet's liquidity breakdown until the card bill settlement releases it.
+
+## ADR-014: Client-Side AES-256-GCM Encrypted Banking & Card Info Vault
+* **Status:** Accepted
+* **Context:** Daily-driver finance users frequently need quick access to account numbers, IFSC codes, and card details alongside their wallet balances, but storing plaintext credentials in Supabase or unencrypted SQLite violates privacy-first security principles.
+* **Decision:** Store sensitive account/card details in `vault_secrets` exclusively as client-encrypted **AES-256-GCM** ciphertext with per-record IV and salt metadata. Secrets remain masked by default, require hardware biometric verification (`expo-local-authentication` / WebAuthn gate) to decrypt and reveal in memory, and trigger an automatic 45-second clipboard clear after copying.
+
+## ADR-015: Zero-Cost Visual Design Pipeline (Google Stitch + Local FigCraft Source of Truth)
+* **Status:** Accepted
+* **Context:** Implementing multi-tab mobile and web V1 screens directly from prose specs risks layout drift and token inconsistency, while paid Figma seat/plugin tooling adds unnecessary friction.
+* **Decision:** Standardize on a zero-cost three-stage visual pipeline:
+  1. **Google Stitch** for rapid screen exploration across Batch 1 (core daily loop) and Batch 2 (secondary flows).
+  2. **FigCraft** (`docs/designs/finvault-v1.figcraft`) as the version-controlled, local master editable design source of truth enforcing Botanical Minimalist tokens and `<= 3` visual groups per screen.
+  3. **Antigravity MCP Implementation** translating finalized FigCraft specs directly into `packages/ui`, `apps/web`, and `apps/mobile`.
